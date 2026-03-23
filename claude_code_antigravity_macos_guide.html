@@ -1,0 +1,324 @@
+
+<style>
+  :root { --step-active: var(--color-background-info); --accent: var(--color-text-info); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-mono); }
+  .guide { padding: 1.5rem 0; max-width: 680px; }
+  .header { margin-bottom: 1.5rem; }
+  .header h1 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .header p { font-size: 13px; color: var(--color-text-secondary); }
+  .specs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .spec-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); font-family: var(--font-mono); }
+
+  .step-list { display: flex; flex-direction: column; gap: 2px; }
+  .step { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+  .step-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; user-select: none; }
+  .step-header:hover { background: var(--color-background-secondary); }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--color-text-secondary); flex-shrink: 0; font-family: var(--font-mono); }
+  .step.done .step-num { background: var(--color-background-success); border-color: var(--color-border-success); color: var(--color-text-success); }
+  .step-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+  .step-tag { font-size: 11px; color: var(--color-text-secondary); font-family: var(--font-mono); }
+  .chevron { font-size: 10px; color: var(--color-text-tertiary); transition: transform 0.2s; }
+  .step.open .chevron { transform: rotate(90deg); }
+  .step-body { display: none; padding: 0 16px 16px; border-top: 0.5px solid var(--color-border-tertiary); }
+  .step.open .step-body { display: block; }
+
+  .cmd-block { background: var(--color-background-tertiary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 14px; margin: 10px 0; position: relative; }
+  .cmd-block code { font-family: var(--font-mono); font-size: 12px; color: var(--color-text-primary); white-space: pre; display: block; }
+  .cmd-block .comment { color: var(--color-text-tertiary); }
+  .copy-btn { position: absolute; top: 8px; right: 8px; font-size: 11px; padding: 3px 8px; border-radius: 4px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); color: var(--color-text-secondary); cursor: pointer; }
+  .copy-btn:hover { background: var(--color-background-primary); }
+
+  .note { background: var(--color-background-info); border: 0.5px solid var(--color-border-info); border-radius: var(--border-radius-md); padding: 10px 14px; margin: 10px 0; font-size: 12px; color: var(--color-text-info); }
+  .warn { background: var(--color-background-warning); border: 0.5px solid var(--color-border-warning); border-radius: var(--border-radius-md); padding: 10px 14px; margin: 10px 0; font-size: 12px; color: var(--color-text-warning); }
+
+  .desc { font-size: 13px; color: var(--color-text-secondary); margin: 10px 0; line-height: 1.6; }
+  .desc b { color: var(--color-text-primary); font-weight: 500; }
+
+  .check-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; }
+  .check-row:last-child { border-bottom: none; }
+  .check-row input[type=checkbox] { cursor: pointer; }
+  .check-row label { color: var(--color-text-secondary); cursor: pointer; flex: 1; }
+  .check-row.checked label { color: var(--color-text-tertiary); text-decoration: line-through; }
+
+  .progress-bar { height: 3px; background: var(--color-border-tertiary); border-radius: 2px; margin-bottom: 1.5rem; }
+  .progress-fill { height: 100%; border-radius: 2px; background: var(--color-text-success); transition: width 0.4s ease; }
+
+  .done-banner { background: var(--color-background-success); border: 0.5px solid var(--color-border-success); border-radius: var(--border-radius-lg); padding: 16px; text-align: center; margin-top: 12px; display: none; }
+  .done-banner.show { display: block; }
+  .done-banner p { font-size: 14px; color: var(--color-text-success); font-weight: 500; }
+  .done-banner span { font-size: 12px; color: var(--color-text-success); opacity: 0.8; }
+  .ask-btn { margin-top: 10px; padding: 8px 16px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-success); border-radius: var(--border-radius-md); font-size: 13px; color: var(--color-text-success); cursor: pointer; }
+</style>
+
+<div class="guide">
+  <div class="header">
+    <h1>Claude Code + Antigravity — macOS Setup</h1>
+    <p>Hướng dẫn cài đặt từng bước, tối ưu cho máy của bạn</p>
+    <div class="specs">
+      <span class="spec-badge">MacBook Pro M1 2020</span>
+      <span class="spec-badge">macOS Tahoe 26.3.1</span>
+      <span class="spec-badge">16 GB RAM</span>
+      <span class="spec-badge">Claude Code 2.1.81</span>
+    </div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+
+  <div class="step-list" id="steps">
+
+    <!-- Step 1 -->
+    <div class="step open" id="s1">
+      <div class="step-header" onclick="toggle('s1')">
+        <div class="step-num" id="n1">1</div>
+        <span class="step-title">Cài Antigravity</span>
+        <span class="step-tag">IDE</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="step-body">
+        <p class="desc">Cài Antigravity — IDE agent-first của Google, <b>miễn phí hoàn toàn</b>. Máy M1 dùng bản Apple Silicon.</p>
+        <p class="desc" style="margin-top:4px"><b>Cách 1 — Homebrew</b> (tự động cập nhật):</p>
+        <div class="cmd-block">
+          <code>brew install --cask antigravity</code>
+          <button class="copy-btn" onclick="copy(this,'brew install --cask antigravity')">copy</button>
+        </div>
+        <p class="desc"><b>Cách 2 — Tải thủ công (.dmg):</b></p>
+        <div class="cmd-block">
+          <code><span class="comment"># Truy cập trình duyệt:</span>
+antigravity.google/download
+<span class="comment"># Chọn: Download for Apple Silicon (M1/M2/M3/M4)</span></code>
+        </div>
+        <div class="note">Sau khi cài: mở Antigravity → đăng nhập Google Account → cấp quyền file system &amp; network khi được hỏi.</div>
+        <div style="margin-top:10px">
+          <div class="check-row" id="c1a"><input type="checkbox" id="cb1a" onchange="checkItem('c1a','s1',['cb1a','cb1b'])"><label for="cb1a">Đã cài và mở được Antigravity</label></div>
+          <div class="check-row" id="c1b"><input type="checkbox" id="cb1b" onchange="checkItem('c1b','s1',['cb1a','cb1b'])"><label for="cb1b">Đã đăng nhập Google Account</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step" id="s2">
+      <div class="step-header" onclick="toggle('s2')">
+        <div class="step-num" id="n2">2</div>
+        <span class="step-title">Cài Claude Code</span>
+        <span class="step-tag">CLI</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="step-body">
+        <p class="desc">Cài Claude Code bằng native installer — <b>không cần Node.js</b>, tự động cập nhật trong nền.</p>
+        <div class="cmd-block">
+          <code>curl -fsSL https://claude.ai/install.sh | bash</code>
+          <button class="copy-btn" onclick="copy(this,'curl -fsSL https://claude.ai/install.sh | bash')">copy</button>
+        </div>
+        <p class="desc" style="margin-top:4px">Sau khi cài, thêm vào PATH của zsh (lỗi bạn đã gặp trước đó):</p>
+        <div class="cmd-block">
+          <code>echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc</code>
+          <button class="copy-btn" onclick="copy(this,`echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc`)">copy</button>
+        </div>
+        <p class="desc">Kiểm tra:</p>
+        <div class="cmd-block">
+          <code>claude --version
+<span class="comment"># Kết quả mong đợi: 2.1.81 (Claude Code) ✓</span></code>
+          <button class="copy-btn" onclick="copy(this,'claude --version')">copy</button>
+        </div>
+        <div class="note">Bạn đã hoàn thành bước này rồi! Claude Code 2.1.81 đã cài thành công.</div>
+        <div style="margin-top:10px">
+          <div class="check-row" id="c2a"><input type="checkbox" id="cb2a" onchange="checkItem('c2a','s2',['cb2a'])"><label for="cb2a">claude --version hiện 2.1.81</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step" id="s3">
+      <div class="step-header" onclick="toggle('s3')">
+        <div class="step-num" id="n3">3</div>
+        <span class="step-title">Lấy Anthropic API Key</span>
+        <span class="step-tag">Auth</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="step-body">
+        <p class="desc">Claude Code cần tài khoản Anthropic. Chọn một trong hai cách:</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0">
+          <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px">
+            <p style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px">Claude Pro/Max</p>
+            <p style="font-size:11px;color:var(--color-text-secondary)">Subscription $20/tháng. Đăng nhập bằng account claude.ai hiện có.</p>
+          </div>
+          <div style="border:0.5px solid var(--color-border-info);border-radius:var(--border-radius-md);padding:12px">
+            <p style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px">API Key (Pay-as-you-go)</p>
+            <p style="font-size:11px;color:var(--color-text-secondary)">Nạp $5 credit. Phù hợp nếu dùng không thường xuyên.</p>
+          </div>
+        </div>
+        <p class="desc"><b>Lấy API Key:</b> console.anthropic.com → API Keys → Create Key → Copy ngay (chỉ hiện 1 lần).</p>
+        <div class="warn">Cộng đồng khuyên dùng bản Max ($100/tháng) hoặc API Key nếu code nhiều — bản Pro $20 dễ hết limit.</div>
+        <div style="margin-top:10px">
+          <div class="check-row" id="c3a"><input type="checkbox" id="cb3a" onchange="checkItem('c3a','s3',['cb3a','cb3b'])"><label for="cb3a">Đã có Claude Pro/Max hoặc API Key</label></div>
+          <div class="check-row" id="c3b"><input type="checkbox" id="cb3b" onchange="checkItem('c3b','s3',['cb3a','cb3b'])"><label for="cb3b">Đã lưu API Key vào nơi an toàn</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step" id="s4">
+      <div class="step-header" onclick="toggle('s4')">
+        <div class="step-num" id="n4">4</div>
+        <span class="step-title">Cài Claude Code Extension trong Antigravity</span>
+        <span class="step-tag">Extension</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="step-body">
+        <p class="desc">Antigravity là VS Code fork, hỗ trợ cài extension như bình thường:</p>
+        <div class="cmd-block">
+          <code><span class="comment"># Trong Antigravity:</span>
+Cmd + Shift + X     <span class="comment">→ mở Extensions</span>
+Tìm: "Claude Code"  <span class="comment">→ cài extension của Anthropic</span></code>
+        </div>
+        <p class="desc">Sau khi cài, click icon <b>Spark (⚡)</b> trong sidebar trái → mở panel Claude Code.</p>
+        <div class="cmd-block">
+          <code><span class="comment"># Đăng nhập Claude Code trong Antigravity:</span>
+/log           <span class="comment">→ gõ lệnh này trong chat panel</span>
+               <span class="comment">→ chọn API key hoặc Claude account</span></code>
+          <button class="copy-btn" onclick="copy(this,'/log')">copy</button>
+        </div>
+        <div class="note">Bạn đã thấy panel /log đang "Generating..." trong screenshot trước — đúng hướng rồi!</div>
+        <div style="margin-top:10px">
+          <div class="check-row" id="c4a"><input type="checkbox" id="cb4a" onchange="checkItem('c4a','s4',['cb4a','cb4b'])"><label for="cb4a">Extension Claude Code đã cài trong Antigravity</label></div>
+          <div class="check-row" id="c4b"><input type="checkbox" id="cb4b" onchange="checkItem('c4b','s4',['cb4a','cb4b'])"><label for="cb4b">Đã đăng nhập thành công (/log)</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step" id="s5">
+      <div class="step-header" onclick="toggle('s5')">
+        <div class="step-num" id="n5">5</div>
+        <span class="step-title">Khởi động dự án đầu tiên</span>
+        <span class="step-tag">Workflow</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="step-body">
+        <p class="desc">Mở dự án trong Antigravity, sau đó khởi tạo Claude Code:</p>
+        <div class="cmd-block">
+          <code><span class="comment"># Trong terminal của Antigravity:</span>
+cd ~/your-project
+claude
+<span class="comment"># Lần đầu sẽ mở trình duyệt để xác thực</span></code>
+          <button class="copy-btn" onclick="copy(this,'claude')">copy</button>
+        </div>
+        <p class="desc">Trong Claude Code panel, chạy <b>/init</b> để Claude đọc codebase:</p>
+        <div class="cmd-block">
+          <code>/init   <span class="comment">→ tạo file CLAUDE.md với context dự án</span></code>
+          <button class="copy-btn" onclick="copy(this,'/init')">copy</button>
+        </div>
+        <p class="desc"><b>Workflow kết hợp tối ưu:</b></p>
+        <div style="display:flex;flex-direction:column;gap:6px;margin:10px 0;font-size:12px">
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)">
+            <span style="color:var(--color-text-info);font-weight:500;flex-shrink:0">Antigravity</span>
+            <span style="color:var(--color-text-secondary)">Gemini 3 — lên kế hoạch, thiết kế architecture, brainstorm</span>
+          </div>
+          <div style="text-align:center;font-size:11px;color:var(--color-text-tertiary)">↓</div>
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)">
+            <span style="color:var(--color-text-success);font-weight:500;flex-shrink:0">Claude Code</span>
+            <span style="color:var(--color-text-secondary)">Implement code, sửa bug, quản lý git</span>
+          </div>
+          <div style="text-align:center;font-size:11px;color:var(--color-text-tertiary)">↓</div>
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)">
+            <span style="color:var(--color-text-warning);font-weight:500;flex-shrink:0">Review</span>
+            <span style="color:var(--color-text-secondary)">Xem diff/artifacts trong Antigravity, iterate</span>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <div class="check-row" id="c5a"><input type="checkbox" id="cb5a" onchange="checkItem('c5a','s5',['cb5a'])"><label for="cb5a">Đã chạy được claude trong dự án</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step" id="s6">
+      <div class="step-header" onclick="toggle('s6')">
+        <div class="step-num" id="n6">6</div>
+        <span class="step-title">Các lệnh hay dùng nhất</span>
+        <span class="step-tag">Tips</span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="step-body">
+        <p class="desc">Các slash command quan trọng trong Claude Code:</p>
+        <div class="cmd-block">
+          <code>/init        <span class="comment">→ đọc codebase, tạo CLAUDE.md</span>
+/compact     <span class="comment">→ tóm tắt context (dùng sau 30+ turns)</span>
+/clear       <span class="comment">→ xóa conversation history</span>
+/model       <span class="comment">→ chuyển model (Sonnet/Opus)</span>
+/mcp         <span class="comment">→ quản lý MCP servers</span>
+/bug         <span class="comment">→ báo lỗi trực tiếp cho Anthropic</span>
+/help        <span class="comment">→ xem tất cả lệnh</span></code>
+        </div>
+        <p class="desc" style="margin-top:12px"><b>Tips M1 MacBook:</b></p>
+        <div class="cmd-block">
+          <code><span class="comment"># Cập nhật Claude Code:</span>
+curl -fsSL https://claude.ai/install.sh | bash
+
+<span class="comment"># Nếu terminal trong Antigravity không nhận claude:</span>
+source ~/.zshrc
+
+<span class="comment"># Kiểm tra PATH:</span>
+which claude   <span class="comment"># → /Users/[user]/.local/bin/claude</span></code>
+        </div>
+        <div style="margin-top:10px">
+          <div class="check-row" id="c6a"><input type="checkbox" id="cb6a" onchange="checkItem('c6a','s6',['cb6a'])"><label for="cb6a">Đã thử các lệnh cơ bản</label></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="done-banner" id="done-banner">
+    <p>Hoàn thành setup!</p>
+    <span>Claude Code + Antigravity đã sẵn sàng trên MacBook Pro M1 của bạn</span><br>
+    <button class="ask-btn" onclick="sendPrompt('Hướng dẫn tôi workflow kết hợp Antigravity + Claude Code để build một dự án thực tế')">Workflow thực tế ↗</button>
+  </div>
+</div>
+
+<script>
+const stepChecks = { s1:['cb1a','cb1b'], s2:['cb2a'], s3:['cb3a','cb3b'], s4:['cb4a','cb4b'], s5:['cb5a'], s6:['cb6a'] };
+const totalChecks = Object.values(stepChecks).flat().length;
+
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+function checkItem(rowId, stepId, checks) {
+  const row = document.getElementById(rowId);
+  const cb = row.querySelector('input');
+  row.classList.toggle('checked', cb.checked);
+  const allDone = checks.every(id => document.getElementById(id).checked);
+  if (allDone) markStep(stepId);
+  else unmarkStep(stepId);
+  updateProgress();
+}
+
+function markStep(stepId) {
+  const num = stepId.replace('s','');
+  document.getElementById('n'+num).textContent = '✓';
+  document.getElementById(stepId).classList.add('done');
+}
+function unmarkStep(stepId) {
+  const num = stepId.replace('s','');
+  document.getElementById('n'+num).textContent = num;
+  document.getElementById(stepId).classList.remove('done');
+}
+
+function updateProgress() {
+  const checked = document.querySelectorAll('.step-list input[type=checkbox]:checked').length;
+  const pct = Math.round(checked / totalChecks * 100);
+  document.getElementById('prog').style.width = pct + '%';
+  if (pct === 100) document.getElementById('done-banner').classList.add('show');
+  else document.getElementById('done-banner').classList.remove('show');
+}
+
+function copy(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied';
+    setTimeout(() => btn.textContent = 'copy', 1500);
+  });
+}
+</script>
