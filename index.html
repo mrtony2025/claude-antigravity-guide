@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Claude Code + Antigravity + Gemini CLI | macOS M1 2026</title>
+  <style>
+    /* ===== RESET & VARIABLES ===== */
+    :root {
+      --bg: #0D0D0D;
+      --surface: #141414;
+      --border: #2A2A2A;
+      --accent-anthropic: #E8673A;
+      --accent-google: #4285F4;
+      --accent-gemini: #34A853;
+      --accent-banana: #FBBC04;
+      --text: #F0EEE8;
+      --text-muted: #888888;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+      --nav-height: 72px;
+      --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 100px 0; opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
+    section.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height);
+      background: rgba(13, 13, 13, 0.8);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000; transition: transform 0.3s ease;
+    }
+    nav.nav-hidden { transform: translateY(-100%); }
+    .nav-container {
+      max-width: 1200px; margin: 0 auto; height: 100%;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+    }
+    .logo { font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+    .logo span { color: var(--accent-anthropic); }
+    .badge-m1 {
+      font-size: 10px; background: var(--border); padding: 2px 8px;
+      border-radius: 20px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 14px;
+      font-weight: 500; transition: var(--transition);
+    }
+    .nav-links a:hover { color: var(--text); }
+    .menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+
+    /* Mobile Menu Overlay */
+    .mobile-overlay {
+      position: fixed; inset: 0; background: var(--bg); z-index: 999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 30px; transform: translateX(100%); transition: 0.3s ease;
+    }
+    .mobile-overlay.active { transform: translateX(0); }
+    .mobile-overlay a { font-size: 1.5rem; text-decoration: none; color: var(--text); font-weight: 600; }
+
+    /* ===== HERO ===== */
+    #hero {
+      height: 100vh; min-height: 700px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding-top: var(--nav-height);
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 40px; border: 1px solid var(--border);
+      font-size: 13px; color: var(--text-muted); margin-bottom: 32px;
+    }
+    .hero-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-anthropic); }
+    h1 {
+      font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1.1; font-weight: 800;
+      letter-spacing: -0.03em; margin-bottom: 24px;
+    }
+    .subtext { font-size: 1.2rem; color: var(--text-muted); max-width: 650px; margin-bottom: 40px; }
+    .hero-ctas { display: flex; gap: 16px; margin-bottom: 64px; }
+    .btn {
+      padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 16px;
+      cursor: pointer; transition: var(--transition); text-decoration: none; display: inline-block;
+    }
+    .btn-primary { background: var(--accent-anthropic); color: white; border: none; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(232, 103, 58, 0.3); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--surface); border-color: var(--text-muted); }
+
+    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; width: 100%; max-width: 800px; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border); padding: 16px;
+      border-radius: var(--radius); text-align: left;
+    }
+    .stat-val { font-family: var(--font-mono); font-size: 14px; font-weight: 600; display: block; margin-bottom: 4px; }
+    .stat-label { font-size: 12px; color: var(--text-muted); }
+
+    /* ===== TERMINAL MOCKUP ===== */
+    .terminal {
+      width: 100%; max-width: 700px; background: #1A1A1A; border-radius: 10px;
+      margin-top: 60px; text-align: left; box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+      border: 1px solid #333; overflow: hidden;
+    }
+    .terminal-header {
+      padding: 12px 16px; background: #252525; display: flex; gap: 6px; align-items: center;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #FF5F56; } .dot-y { background: #FFBD2E; } .dot-g { background: #27C93F; }
+    .terminal-body { padding: 20px; font-family: var(--font-mono); font-size: 14px; min-height: 120px; }
+    .cursor { display: inline-block; width: 8px; height: 18px; background: var(--text); vertical-align: middle; animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ===== TOOLS SECTION ===== */
+    .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .tool-card {
+      background: var(--surface); border: 1px solid var(--border); padding: 32px;
+      border-radius: var(--radius); transition: var(--transition);
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .tool-card:hover { border-color: var(--card-color); box-shadow: 0 0 40px -10px var(--card-color-alpha); transform: translateY(-4px); }
+    .tool-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 10px; margin-bottom: 8px; }
+    .tool-card h3 { font-size: 1.4rem; font-weight: 700; }
+    .tool-card p { font-size: 14px; color: var(--text-muted); }
+    .tool-tag { font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+
+    /* ===== CÀI ĐẶT (ACCORDION) ===== */
+    #setup .container { max-width: 800px; }
+    .accordion { display: flex; flex-direction: column; gap: 16px; }
+    .acc-item { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+    .acc-header {
+      padding: 24px; cursor: pointer; display: flex; align-items: center; gap: 20px;
+      user-select: none; transition: background 0.2s;
+    }
+    .acc-header:hover { background: #1C1C1C; }
+    .acc-num {
+      width: 32px; height: 32px; background: var(--border); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--text-muted);
+    }
+    .acc-item.active .acc-num { background: var(--accent-anthropic); color: white; }
+    .acc-title { font-weight: 600; font-size: 18px; flex: 1; }
+    .acc-icon { transition: 0.3s; }
+    .acc-item.active .acc-icon { transform: rotate(180deg); }
+    .acc-body { max-height: 0; transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
+    .acc-content { padding: 0 24px 24px 76px; }
+    .acc-content p { color: var(--text-muted); font-size: 15px; margin-bottom: 16px; }
+
+    /* CODE BLOCK */
+    .code-block {
+      background: #000; border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px; position: relative; display: flex; align-items: center; justify-content: space-between;
+    }
+    .code-block code { font-family: var(--font-mono); font-size: 13px; color: #D1D1D1; word-break: break-all; }
+    .copy-btn {
+      background: var(--border); border: none; border-radius: 4px; padding: 6px 10px;
+      cursor: pointer; color: var(--text-muted); font-size: 12px; transition: 0.2s; flex-shrink: 0; margin-left: 12px;
+    }
+    .copy-btn:hover { background: #3A3A3A; color: var(--text); }
+    .copy-btn.copied { background: var(--accent-gemini); color: white; }
+
+    /* ===== WORKFLOW (TIMELINE) ===== */
+    .timeline { display: flex; justify-content: space-between; position: relative; margin-top: 60px; }
+    .timeline::before {
+      content: ''; position: absolute; top: 24px; left: 0; right: 0; height: 1px;
+      background: var(--border); z-index: 1;
+    }
+    .tm-item { position: relative; z-index: 2; text-align: center; flex: 1; }
+    .tm-dot {
+      width: 48px; height: 48px; background: var(--surface); border: 2px solid var(--border);
+      border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;
+      font-size: 20px; transition: var(--transition);
+    }
+    .tm-item:hover .tm-dot { border-color: var(--item-color); transform: scale(1.1); }
+    .tm-title { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+    .tm-desc { font-size: 13px; color: var(--text-muted); padding: 0 10px; }
+
+    /* ===== MODELS TABLE ===== */
+    .table-container { overflow-x: auto; margin-top: 40px; border: 1px solid var(--border); border-radius: var(--radius); }
+    table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
+    th { background: #1A1A1A; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: 16px 24px; font-weight: 600; }
+    td { padding: 16px 24px; border-top: 1px solid var(--border); font-size: 14px; }
+    tr:nth-child(even) { background-color: #141414; }
+    tr:nth-child(odd) { background-color: #111111; }
+    .alias { font-family: var(--font-mono); color: var(--accent-anthropic); font-weight: 700; }
+
+    /* ===== TIPS ===== */
+    .tips-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+    .tip-card { background: var(--surface); border: 1px solid var(--border); padding: 24px; border-radius: var(--radius); }
+    .tip-card h4 { font-weight: 700; margin-bottom: 12px; font-size: 1.1rem; }
+    .tip-card p { font-size: 14px; color: var(--text-muted); }
+
+    /* ===== SECTION HEADERS ===== */
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-header h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 16px; }
+    .section-header p { color: var(--text-muted); font-size: 1.1rem; }
+
+    /* ===== CTA & FOOTER ===== */
+    #cta { background: #080808; text-align: center; padding: 120px 0; border-top: 1px solid var(--border); }
+    footer { padding: 60px 0; border-top: 1px solid var(--border); }
+    .footer-content { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; }
+    .footer-brand { max-width: 300px; }
+    .footer-brand p { font-size: 14px; color: var(--text-muted); margin-top: 12px; }
+    .footer-links-group { display: flex; gap: 60px; }
+    .footer-col h5 { font-size: 14px; color: var(--text); margin-bottom: 20px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 12px; }
+    .footer-col a { text-decoration: none; color: var(--text-muted); font-size: 14px; transition: 0.2s; }
+    .footer-col a:hover { color: var(--text); }
+    .copyright { margin-top: 60px; padding-top: 30px; border-top: 1px solid #1A1A1A; text-align: center; color: var(--text-muted); font-size: 12px; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .tools-grid, .tips-grid { grid-template-columns: repeat(2, 1fr); }
+      .timeline { overflow-x: auto; padding-bottom: 20px; gap: 20px; }
+      .tm-item { min-width: 180px; }
+      .timeline::before { display: none; }
+    }
+    @media (max-width: 768px) {
+      h1 { font-size: 2.8rem; }
+      .nav-links { display: none; }
+      .menu-btn { display: block; }
+      .stat-cards { grid-template-columns: 1fr; }
+      .tools-grid, .tips-grid { grid-template-columns: 1fr; }
+      .hero-ctas { flex-direction: column; width: 100%; max-width: 300px; }
+      .btn { text-align: center; }
+      .acc-content { padding-left: 24px; }
+      .footer-links-group { gap: 30px; width: 100%; justify-content: space-between; }
+      .timeline { flex-direction: column; gap: 40px; align-items: center; }
+      .tm-item { min-width: auto; width: 100%; max-width: 300px; }
+    }
+
+    /* SVG Icons */
+    .icon-svg { width: 24px; height: 24px; fill: currentColor; }
+  </style>
+</head>
+<body>
+
+  <!-- MOBILE OVERLAY -->
+  <div class="mobile-overlay" id="mobileOverlay">
+    <a href="#setup" onclick="toggleMenu()">Cài đặt</a>
+    <a href="#workflow" onclick="toggleMenu()">Workflow</a>
+    <a href="#models" onclick="toggleMenu()">Models</a>
+    <a href="#tips" onclick="toggleMenu()">Tips</a>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <svg class="icon-svg" viewBox="0 0 24 24" style="color:var(--accent-anthropic)">
+          <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/>
+        </svg>
+        Claude <span>Code</span>
+        <span class="badge-m1">M1 Setup</span>
+      </div>
+      <div class="nav-links">
+        <a href="#setup">Cài đặt</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#models">Models</a>
+        <a href="#tips">Tips</a>
+        <a href="https://docs.anthropic.com/claude-code" target="_blank" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Tài liệu ↗</a>
+      </div>
+      <button class="menu-btn" onclick="toggleMenu()" id="menuBtn">
+        <svg class="icon-svg" viewBox="0 0 24 24" style="fill:var(--text)">
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-badge">MacBook Pro M1 · macOS Tahoe · Tháng 3/2026</div>
+      <h1>Setup Claude Code +<br>Antigravity + Gemini CLI</h1>
+      <p class="subtext">Hướng dẫn đầy đủ từ thực tế triển khai — tối ưu hóa quy trình coding cho developer Việt Nam trên nền tảng Apple Silicon.</p>
+      
+      <div class="hero-ctas">
+        <a href="#setup" class="btn btn-primary">Bắt đầu cài đặt</a>
+        <a href="https://github.com/google/gemini-cli" target="_blank" class="btn btn-secondary">Xem tài liệu CLI</a>
+      </div>
+
+      <div class="stat-cards">
+        <div class="stat-card">
+          <span class="stat-val">2.1.81</span>
+          <span class="stat-label">Claude Code Version</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">0.34.0</span>
+          <span class="stat-label">Gemini CLI Version</span>
+        </div>
+        <div class="stat-card" style="border-color: var(--accent-gemini);">
+          <span class="stat-val" style="color: var(--accent-gemini);">1,000 req/ngày</span>
+          <span class="stat-label">Free Tier Quota</span>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <span style="font-size: 11px; color: #666; margin-left: 8px; font-family: var(--font-mono);">zsh — 80x24</span>
+        </div>
+        <div class="terminal-body" id="typewriter">
+          <span id="typedText"></span><span class="cursor"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section id="tools">
+    <div class="container">
+      <div class="section-header">
+        <h2>Bộ công cụ AI 2026</h2>
+        <p>Sự kết hợp hoàn hảo giữa 3 "ông lớn" trong một quy trình duy nhất.</p>
+      </div>
+      <div class="tools-grid">
+        <!-- Antigravity -->
+        <div class="tool-card" style="--card-color: var(--accent-google); --card-color-alpha: rgba(66, 133, 244, 0.2);">
+          <div class="tool-icon" style="background: rgba(66, 133, 244, 0.1); color: var(--accent-google);">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <span class="tool-tag" style="color: var(--accent-google);">GOOGLE / IDE</span>
+          <h3>Antigravity</h3>
+          <p>IDE agent-first thế hệ mới. Chuyên dùng để lên kế hoạch kiến trúc, review code và quản lý file trực quan.</p>
+          <div class="tool-tag" style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block;">Gemini 3.1 Pro · Miễn phí</div>
+        </div>
+        <!-- Claude Code -->
+        <div class="tool-card" style="--card-color: var(--accent-anthropic); --card-color-alpha: rgba(232, 103, 58, 0.2);">
+          <div class="tool-icon" style="background: rgba(232, 103, 58, 0.1); color: var(--accent-anthropic);">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+          </div>
+          <span class="tool-tag" style="color: var(--accent-anthropic);">ANTHROPIC / CLI</span>
+          <h3>Claude Code</h3>
+          <p>Mạnh mẽ nhất trong việc thực thi. Claude trực tiếp viết code, sửa bug và chạy test ngay trong terminal.</p>
+          <div class="tool-tag" style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block;">Sonnet 4.6 · Pro $20/tháng</div>
+        </div>
+        <!-- Gemini CLI -->
+        <div class="tool-card" style="--card-color: var(--accent-gemini); --card-color-alpha: rgba(52, 168, 83, 0.2);">
+          <div class="tool-icon" style="background: rgba(52, 168, 83, 0.1); color: var(--accent-gemini);">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44a.99.99 0 01-.93 0l-7.9-4.44A.993.993 0 013 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.09.34-.14.53-.14s.37.05.53.14l7.9 4.44c.32.17.53.5.53.88v9z"/></svg>
+          </div>
+          <span class="tool-tag" style="color: var(--accent-gemini);">OSS / BACKUP</span>
+          <h3>Gemini CLI</h3>
+          <p>Lớp bảo mật và dự phòng. Sử dụng khi hết quota Claude hoặc cần xử lý batch nhiều repo cùng lúc miễn phí.</p>
+          <div class="tool-tag" style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block;">1,000 req/ngày · Free</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CÀI ĐẶT -->
+  <section id="setup">
+    <div class="container">
+      <div class="section-header">
+        <h2>Hướng dẫn cài đặt</h2>
+        <p>Thực hiện theo trình tự để đảm bảo mọi công cụ hoạt động trơn tru.</p>
+      </div>
+
+      <div class="accordion">
+        <!-- Bước 1 -->
+        <div class="acc-item active">
+          <div class="acc-header">
+            <div class="acc-num">1</div>
+            <span class="acc-title">Cài đặt Antigravity IDE</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body" style="max-height: 500px;">
+            <div class="acc-content">
+              <p>Antigravity là IDE chính chủ từ Google, hỗ trợ sâu cho Gemini và MCP. Khuyên dùng Homebrew để dễ dàng cập nhật.</p>
+              <div class="code-block">
+                <code>brew install --cask antigravity</code>
+                <button class="copy-btn" onclick="copyCode(this, 'brew install --cask antigravity')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Bước 2 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">2</div>
+            <span class="acc-title">Cài đặt Claude Code CLI</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Native installer của Anthropic giúp cài đặt mà không cần quản lý version Node.js thủ công.</p>
+              <div class="code-block">
+                <code>curl -fsSL https://claude.ai/install.sh | bash</code>
+                <button class="copy-btn" onclick="copyCode(this, 'curl -fsSL https://claude.ai/install.sh | bash')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Bước 3 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">3</div>
+            <span class="acc-title">Cài đặt Gemini CLI (Fix NPM)</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Đảm bảo NPM của bạn có quyền ghi vào global folder để cài Gemini CLI mà không cần dùng sudo.</p>
+              <div class="code-block">
+                <code>mkdir -p ~/.npm-global && npm config set prefix '~/.npm-global' && npm install -g @google/gemini-cli</code>
+                <button class="copy-btn" onclick="copyCode(this, 'mkdir -p ~/.npm-global && npm config set prefix \'~/.npm-global\' && npm install -g @google/gemini-cli')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Bước 4 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">4</div>
+            <span class="acc-title">Cấu hình Alias cho Zsh</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Thêm các shortcut để chuyển đổi nhanh model và công cụ trong quá trình làm việc.</p>
+              <div class="code-block">
+                <code>echo "alias cc='claude'\nalias gm='gemini'\nalias cco='claude --model opus'" >> ~/.zshrc && source ~/.zshrc</code>
+                <button class="copy-btn" onclick="copyCode(this, 'echo \"alias cc=\'claude\'\\nalias gm=\'gemini\'\\nalias cco=\'claude --model opus\'\" >> ~/.zshrc && source ~/.zshrc')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKFLOW -->
+  <section id="workflow" style="background: #0B0B0B;">
+    <div class="container">
+      <div class="section-header">
+        <h2>Quy trình làm việc tối ưu 5 bước</h2>
+        <p>Sự kết hợp hoàn hảo giữa các AI Agents để hoàn thành dự án nhanh nhất.</p>
+      </div>
+      <div class="timeline">
+        <div class="tm-item" style="--item-color: #4285F4;">
+          <div class="tm-dot" style="color: #4285F4;">🔍</div>
+          <div class="tm-title">1. Antigravity</div>
+          <div class="tm-desc">Sử dụng Gemini 3 Pro để phân tích yêu cầu và lên kế hoạch (plan) kiến trúc.</div>
+        </div>
+        <div class="tm-item" style="--item-color: #FBBC04;">
+          <div class="tm-dot" style="color: #FBBC04;">🎨</div>
+          <div class="tm-title">2. Nano Banana 2</div>
+          <div class="tm-dot" style="border-radius:0; border:none; width:auto; height:auto; margin-bottom:12px;"></div>
+          <div class="tm-title">Tạo ảnh & Mockup</div>
+          <div class="tm-desc">Sinh placeholder, icon, và mockup giao diện trực tiếp trong Antigravity.</div>
+        </div>
+        <div class="tm-item" style="--item-color: #E8673A;">
+          <div class="tm-dot" style="color: #E8673A;">⚡</div>
+          <div class="tm-title">3. Claude Code</div>
+          <div class="tm-desc">Yêu cầu Claude thực thi HTML/CSS/JS theo plan và mockup đã có.</div>
+        </div>
+        <div class="tm-item" style="--item-color: #34A853;">
+          <div class="tm-dot" style="color: #34A853;">📦</div>
+          <div class="tm-title">4. Git Commit</div>
+          <div class="tm-desc">Sử dụng AI để viết commit message và tạo checkpoint an toàn.</div>
+        </div>
+        <div class="tm-item" style="--item-color: #34A853;">
+          <div class="tm-dot" style="color: #34A853;">🌐</div>
+          <div class="tm-title">5. Gemini CLI</div>
+          <div class="tm-desc">Dùng lệnh <code>@web</code> để verify thông tin, search docs và kiểm tra lỗi.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODELS -->
+  <section id="models">
+    <div class="container">
+      <div class="section-header">
+        <h2>Bảng tra cứu Alias</h2>
+        <p>Các lệnh tắt khuyên dùng để tiết kiệm thời gian gõ phím.</p>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Alias</th>
+              <th>Cấu hình / Model</th>
+              <th>Mục đích sử dụng</th>
+              <th>Chi phí</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="alias">cc</td>
+              <td>Claude 3.5 Sonnet</td>
+              <td>Code hàng ngày, nhanh, thông minh</td>
+              <td>$20/tháng</td>
+            </tr>
+            <tr>
+              <td class="alias">cco</td>
+              <td>Claude 3 Opus</td>
+              <td>Giải quyết bài toán cực khó, refactor lớn</td>
+              <td>$20/tháng</td>
+            </tr>
+            <tr>
+              <td class="alias">cch</td>
+              <td>Claude 3 Haiku</td>
+              <td>Giải thích code, viết test đơn giản</td>
+              <td>$20/tháng</td>
+            </tr>
+            <tr>
+              <td class="alias">cck</td>
+              <td>--keep-context</td>
+              <td>Giữ session dài khi fix bug phức tạp</td>
+              <td>Cao hơn</td>
+            </tr>
+            <tr>
+              <td class="alias">gm</td>
+              <td>Gemini 3 Pro</td>
+              <td>Batch processing, backup khi Claude hết limit</td>
+              <td>Miễn phí</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- NANO BANANA -->
+  <section id="banana">
+    <div class="container">
+      <div class="section-header">
+        <h2>Tạo ảnh với Nano Banana 2</h2>
+        <p>Nano Banana 2 là Gemini 3.1 Flash Image, model sinh ảnh AI của Google tích hợp sẵn trong Antigravity.</p>
+      </div>
+      <div class="tools-grid">
+        <div class="tool-card" style="--card-color: #FBBC04; --card-color-alpha: rgba(251, 188, 4, 0.1);">
+          <h3>Nano Banana</h3>
+          <p>Model: Gemini 2.5 Flash. Tốc độ cực nhanh cho các icon đơn giản.</p>
+          <span class="badge-m1" style="background: rgba(251, 188, 4, 0.1); color: #FBBC04;">Legacy</span>
+        </div>
+        <div class="tool-card" style="--card-color: #4285F4; --card-color-alpha: rgba(66, 133, 244, 0.1);">
+          <h3>Nano Banana Pro</h3>
+          <p>Model: Gemini 3 Pro. Chi tiết cao, phù hợp cho photorealistic mockup.</p>
+          <span class="badge-m1" style="background: rgba(66, 133, 244, 0.1); color: #4285F4;">Stable</span>
+        </div>
+        <div class="tool-card" style="--card-color: #34A853; --card-color-alpha: rgba(52, 168, 83, 0.1);">
+          <h3>Nano Banana 2</h3>
+          <p>Model: Gemini 3.1 Flash. Cân bằng hoàn hảo giữa tốc độ và chất lượng.</p>
+          <span class="badge-m1" style="background: rgba(52, 168, 83, 0.2); color: #34A853; border: 1px solid #34A853;">Recommended</span>
+        </div>
+      </div>
+      
+      <div class="section-header" style="margin-top: 60px; margin-bottom: 30px;">
+        <h3>Prompt mẫu cho Developer</h3>
+      </div>
+      <div class="accordion">
+        <div class="acc-item">
+          <div class="acc-header">
+            <span class="acc-title">1. Hero image cho landing page developer</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <div class="code-block">
+                <code>Dark tech background, minimal design. MacBook Pro M1 floating in center with terminal window open showing code. Orange glow accent #E8673A. Background: deep dark #0D0D0D with subtle grid pattern. No text. Cinematic lighting, 16:9 ratio.</code>
+                <button class="copy-btn" onclick="copyCode(this, 'Dark tech background, minimal design. MacBook Pro M1 floating in center with terminal window open showing code. Orange glow accent #E8673A. Background: deep dark #0D0D0D with subtle grid pattern. No text. Cinematic lighting, 16:9 ratio.')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-header">
+            <span class="acc-title">2. 3 tool icons: Antigravity / Claude Code / Gemini CLI</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <div class="code-block">
+                <code>Set of 3 isometric app icons. 1: Blue futuristic spaceship (Antigravity). 2: Orange terminal cursor (Claude Code). 3: Green star sparkle (Gemini CLI). Clean glassmorphism style, matte finish, dark background, 3D render, high resolution.</code>
+                <button class="copy-btn" onclick="copyCode(this, 'Set of 3 isometric app icons. 1: Blue futuristic spaceship (Antigravity). 2: Orange terminal cursor (Claude Code). 3: Green star sparkle (Gemini CLI). Clean glassmorphism style, matte finish, dark background, 3D render, high resolution.')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-header">
+            <span class="acc-title">3. Thumbnail YouTube tiếng Việt</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <div class="code-block">
+                <code>YouTube thumbnail background. High contrast, neon colors. A Vietnamese developer working on a Mac M1, looking amazed at the screen. Floating glowing text placeholders. Depth of field, bokeh background of a modern workspace. 1280x720.</code>
+                <button class="copy-btn" onclick="copyCode(this, 'YouTube thumbnail background. High contrast, neon colors. A Vietnamese developer working on a Mac M1, looking amazed at the screen. Floating glowing text placeholders. Depth of field, bokeh background of a modern workspace. 1280x720.')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section id="comparison">
+    <div class="container">
+      <div class="section-header">
+        <h2>So sánh các công cụ</h2>
+        <p>Chi tiết thông số và khả năng hỗ trợ của từng AI Agent.</p>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Tính năng</th>
+              <th>Antigravity</th>
+              <th>Claude Code</th>
+              <th>Gemini CLI</th>
+              <th>Nano Banana 2</th>
+              <th>Kimi K2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Miễn phí</td>
+              <td>✓</td>
+              <td>-</td>
+              <td>✓</td>
+              <td>✓ (Limited)</td>
+              <td>✓</td>
+            </tr>
+            <tr>
+              <td>Code</td>
+              <td>✓</td>
+              <td>✓✓</td>
+              <td>✓</td>
+              <td>-</td>
+              <td>✓</td>
+            </tr>
+            <tr>
+              <td>Sinh ảnh</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>✓✓</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Search Web</td>
+              <td>✓</td>
+              <td>-</td>
+              <td>✓ (@web)</td>
+              <td>✓</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Context</td>
+              <td>1M</td>
+              <td>200k</td>
+              <td>1M</td>
+              <td>-</td>
+              <td>128k</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="container" style="max-width: 800px;">
+      <div class="section-header">
+        <h2>Câu hỏi thường gặp (FAQ)</h2>
+        <p>Giải đáp thắc mắc phổ biến khi triển khai quy trình AI Agent.</p>
+      </div>
+      <div class="accordion">
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">?</div>
+            <span class="acc-title">Tôi có cần mua Claude Pro không?</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Nếu bạn là developer chuyên nghiệp, Claude Pro ($20) rất xứng đáng vì Claude Code (Sonnet 3.5) hiện là công cụ implement tốt nhất. Tuy nhiên, bạn vẫn có thể dùng Gemini CLI và Antigravity hoàn toàn miễn phí cho hầu hết các tác vụ khác.</p>
+            </div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">?</div>
+            <span class="acc-title">Nano Banana 2 thay thế Midjourney được không?</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Với các task của developer như tạo mockup, icon, hero image đơn giản thì Nano Banana 2 làm rất tốt và nhanh. Với các tác phẩm nghệ thuật phức tạp hoặc cần retouch sâu, Midjourney vẫn nhỉnh hơn về độ chi tiết.</p>
+            </div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">?</div>
+            <span class="acc-title">Gemini CLI vs Claude Code — dùng cái nào?</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Dùng <b>Claude Code</b> khi bạn cần AI trực tiếp viết code và sửa file trong repo. Dùng <b>Gemini CLI</b> khi bạn cần search thông tin nhanh (<code>@web</code>), tóm tắt tài liệu lớn (nhờ context 1M) hoặc khi Claude hết quota.</p>
+            </div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">?</div>
+            <span class="acc-title">Khi nào nên dùng /compact?</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Trong Claude Code, hãy dùng <code>/compact</code> khi session chat đã quá dài (khoảng 30-40 lượt chat). Lệnh này giúp tóm tắt context, giải phóng token và giúp AI tập trung vào các yêu cầu mới chính xác hơn.</p>
+            </div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">?</div>
+            <span class="acc-title">Làm sao biết còn bao nhiêu quota?</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Với Claude, bạn có thể check trong settings của claude.ai. Với Gemini CLI, lệnh <code>gm stats</code> sẽ hiển thị số lượng request đã dùng trong ngày. Antigravity thường không giới hạn quota cho các model miễn phí.</p>
+            </div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">?</div>
+            <span class="acc-title">Kimi K2 và OpenRouter khác nhau chỗ nào?</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Kimi K2 là model riêng biệt nổi tiếng với context window lớn và khả năng xử lý file excel/pdf tốt. OpenRouter là một bridge API giúp bạn truy cập hàng trăm model khác nhau (bao gồm cả Kimi, Claude, GPT) thông qua một cổng thanh toán duy nhất.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section id="tips">
+    <div class="container">
+      <div class="section-header">
+        <h2>Tips từ thực tế</h2>
+        <p>Những mẹo nhỏ giúp bạn làm chủ bộ công cụ này nhanh hơn.</p>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-card">
+          <h4>/compact thường xuyên</h4>
+          <p>Dùng lệnh <code>/compact</code> trong Claude Code sau mỗi 30-40 turns để tóm tắt context, giúp tiết kiệm token và giảm lag.</p>
+        </div>
+        <div class="tip-card">
+          <h4>File CLAUDE.md</h4>
+          <p>Luôn giữ file <code>CLAUDE.md</code> ở root project. Đây là "bản đồ" để Claude hiểu architecture mà không cần đọc lại toàn bộ file.</p>
+        </div>
+        <div class="tip-card">
+          <h4>Git thường xuyên</h4>
+          <p>Hãy commit mỗi khi một tính năng nhỏ hoạt động. Điều này giúp bạn dễ dàng rollback nếu AI "đi quá xa" so với ý muốn.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta">
+    <div class="container">
+      <h2 style="font-size: 3rem; margin-bottom: 24px;">Sẵn sàng bứt phá tốc độ code?</h2>
+      <p class="subtext" style="margin: 0 auto 40px;">Bắt đầu cài đặt ngay hôm nay và trải nghiệm sức mạnh của AI Agent thực thụ.</p>
+      <a href="#setup" class="btn btn-primary" style="padding: 18px 48px; font-size: 18px;">Bắt đầu ngay</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo">
+            <svg class="icon-svg" viewBox="0 0 24 24" style="color:var(--accent-anthropic)"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+            Claude <span>Code</span>
+          </div>
+          <p>Tổng hợp từ thực tế cài đặt và sử dụng hàng ngày của cộng đồng developer Việt Nam. Cập nhật tháng 3/2026.</p>
+        </div>
+        <div class="footer-links-group">
+          <div class="footer-col">
+            <h5>Công cụ</h5>
+            <ul>
+              <li><a href="https://claude.ai" target="_blank">Claude.ai</a></li>
+              <li><a href="https://antigravity.google" target="_blank">Antigravity</a></li>
+              <li><a href="https://gemini.google.com" target="_blank">Google Gemini</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Tài liệu</h5>
+            <ul>
+              <li><a href="#">Hướng dẫn CLI</a></li>
+              <li><a href="#">MCP Servers</a></li>
+              <li><a href="#">Prompt Engineering</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Cộng đồng</h5>
+            <ul>
+              <li><a href="#">Discord</a></li>
+              <li><a href="#">Facebook Group</a></li>
+              <li><a href="#">GitHub Repo</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        © 2026 Setup Guide. Made with ❤️ for Developers. Not affiliated with Anthropic or Google.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== NAVBAR SCROLL BEHAVIOR =====
+    let lastScrollTop = 0;
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > lastScrollTop && scrollTop > 200) {
+        navbar.classList.add('nav-hidden');
+      } else {
+        navbar.classList.remove('nav-hidden');
+      }
+      lastScrollTop = scrollTop;
+    });
+
+    // ===== MOBILE MENU =====
+    function toggleMenu() {
+      document.getElementById('mobileOverlay').classList.toggle('active');
+    }
+
+    // ===== ACCORDION LOGIC =====
+    document.querySelectorAll('.acc-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const item = header.parentElement;
+        const isActive = item.classList.contains('active');
+        const container = item.closest('.accordion');
+        
+        // Close other items in the SAME container
+        container.querySelectorAll('.acc-item').forEach(i => {
+          i.classList.remove('active');
+          i.querySelector('.acc-body').style.maxHeight = null;
+        });
+
+        // Toggle current
+        if (!isActive) {
+          item.classList.add('active');
+          const body = item.querySelector('.acc-body');
+          body.style.maxHeight = body.scrollHeight + "px";
+        }
+      });
+    });
+
+    // ===== COPY TO CLIPBOARD =====
+    function copyCode(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // ===== TYPEWRITER ANIMATION =====
+    const textToType = [
+      { t: "$ claude --version", d: 1000 },
+      { t: "2.1.81 (Claude Code) ✓", d: 1500, c: "var(--accent-anthropic)" },
+      { t: "$ gemini --version", d: 800 },
+      { t: "0.34.0 (Gemini CLI) ✓", d: 1500, c: "var(--accent-gemini)" },
+      { t: "$ echo 'Happy coding!'", d: 500 }
+    ];
+
+    async function startTypewriter() {
+      const el = document.getElementById('typedText');
+      while (true) {
+        el.innerHTML = "";
+        for (let item of textToType) {
+          const line = document.createElement('div');
+          line.style.marginBottom = "4px";
+          if (item.c) line.style.color = item.c;
+          el.appendChild(line);
+          
+          for (let i = 0; i < item.t.length; i++) {
+            line.textContent += item.t[i];
+            await new Promise(r => setTimeout(r, 40));
+          }
+          await new Promise(r => setTimeout(r, item.d));
+        }
+        await new Promise(r => setTimeout(r, 3000));
+      }
+    }
+    startTypewriter();
+
+    // ===== INTERSECTION OBSERVER (FADE IN) =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('section').forEach(section => observer.observe(section));
+  </script>
+</body>
+</html>

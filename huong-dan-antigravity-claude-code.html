@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hướng dẫn Claude Code + Antigravity — MacBook Pro M1</title>
+<style>
+  :root {
+    --bg: #0D0D0D;
+    --bg2: #141414;
+    --bg3: #1A1A1A;
+    --border: #2A2A2A;
+    --accent: #E8673A;
+    --accent2: #4285F4;
+    --green: #34A853;
+    --text: #F0EEE8;
+    --muted: #888;
+    --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.7; }
+
+  /* Layout */
+  .sidebar { position: fixed; top: 0; left: 0; width: 240px; height: 100vh; background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .main { margin-left: 240px; max-width: 860px; padding: 48px 56px; }
+
+  /* Sidebar */
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .sidebar-logo h2 { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 0.05em; text-transform: uppercase; }
+  .sidebar-logo p { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .nav-section { padding: 8px 20px 4px; font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 8px; }
+  .nav-link { display: block; padding: 6px 20px; font-size: 13px; color: var(--muted); text-decoration: none; border-left: 2px solid transparent; transition: all 0.15s; }
+  .nav-link:hover, .nav-link.active { color: var(--text); border-left-color: var(--accent); background: rgba(232,103,58,0.06); }
+
+  /* Typography */
+  h1 { font-size: 32px; font-weight: 700; color: var(--text); margin-bottom: 12px; letter-spacing: -0.02em; line-height: 1.2; }
+  h2 { font-size: 22px; font-weight: 600; color: var(--text); margin: 48px 0 16px; padding-top: 48px; border-top: 1px solid var(--border); letter-spacing: -0.01em; }
+  h2:first-of-type { border-top: none; margin-top: 32px; padding-top: 0; }
+  h3 { font-size: 16px; font-weight: 600; color: var(--text); margin: 28px 0 10px; }
+  p { color: #C8C4BC; margin-bottom: 14px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Hero */
+  .hero { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin-bottom: 40px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(232,103,58,0.12); border: 1px solid rgba(232,103,58,0.25); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--accent); margin-bottom: 16px; font-family: var(--mono); }
+  .hero h1 { font-size: 28px; }
+  .hero-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .meta-chip { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: var(--bg3); border: 1px solid var(--border); color: var(--muted); font-family: var(--mono); }
+
+  /* Code blocks */
+  pre { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin: 14px 0; overflow-x: auto; position: relative; }
+  pre code { font-family: var(--mono); font-size: 13px; color: #D4D0C8; line-height: 1.8; white-space: pre; display: block; }
+  .copy-btn { position: absolute; top: 10px; right: 10px; font-size: 11px; padding: 4px 10px; border-radius: 5px; background: var(--bg3); border: 1px solid var(--border); color: var(--muted); cursor: pointer; font-family: var(--mono); }
+  .copy-btn:hover { color: var(--text); border-color: #555; }
+  .copy-btn.ok { color: var(--green); border-color: var(--green); }
+  .cm { color: #666; }
+  .kw { color: #E8673A; }
+  .str { color: #98C379; }
+  .var { color: #61AFEF; }
+  .ok-text { color: var(--green); }
+  .warn-text { color: #E5C07B; }
+
+  /* Callouts */
+  .note { border-radius: 8px; padding: 12px 16px; margin: 16px 0; font-size: 13px; line-height: 1.6; border-left: 3px solid; }
+  .note-green { background: rgba(52,168,83,0.08); border-color: var(--green); color: #7EC894; }
+  .note-blue { background: rgba(66,133,244,0.08); border-color: var(--accent2); color: #7EB4F5; }
+  .note-orange { background: rgba(232,103,58,0.08); border-color: var(--accent); color: #F0936A; }
+  .note-yellow { background: rgba(229,192,123,0.08); border-color: #E5C07B; color: #E5C07B; }
+  .note b { font-weight: 600; }
+
+  /* Steps */
+  .steps { display: flex; flex-direction: column; gap: 6px; margin: 16px 0; }
+  .step-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--muted); flex-shrink: 0; font-family: var(--mono); margin-top: 1px; }
+  .step-content .step-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .step-content .step-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* Compare table */
+  .cmp { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  .cmp th { padding: 10px 14px; background: var(--bg3); color: var(--muted); font-weight: 600; font-size: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  .cmp td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: #C8C4BC; vertical-align: top; }
+  .cmp tr:last-child td { border-bottom: none; }
+  .cmp tr:hover td { background: rgba(255,255,255,0.02); }
+  .win { color: var(--green); font-weight: 500; }
+
+  /* Alias table */
+  .alias-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  .alias-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .alias-table tr:last-child td { border-bottom: none; }
+  .alias-cmd { font-family: var(--mono); font-size: 14px; font-weight: 600; color: #61AFEF; }
+  .alias-arrow { color: var(--border); }
+  .alias-desc { color: #C8C4BC; }
+  .alias-use { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+
+  /* Section divider */
+  .section-num { display: inline-block; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 8px; font-family: var(--mono); vertical-align: middle; }
+
+  /* TOC counter */
+  .toc-count { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+  /* Footer */
+  .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h2>Claude Code</h2>
+    <p>+ Antigravity · MacBook M1</p>
+  </div>
+  <div class="nav-section">Bắt đầu</div>
+  <a class="nav-link" href="#overview">Tổng quan</a>
+  <a class="nav-link" href="#antigravity">Cài Antigravity</a>
+  <a class="nav-link" href="#claude-code">Cài Claude Code</a>
+  <a class="nav-link" href="#gemini-cli">Cài Gemini CLI</a>
+  <div class="nav-section">Cấu hình</div>
+  <a class="nav-link" href="#zshrc">File .zshrc</a>
+  <a class="nav-link" href="#mcp">Cài MCP</a>
+  <a class="nav-link" href="#models">Thêm model</a>
+  <div class="nav-section">Làm việc</div>
+  <a class="nav-link" href="#workflow">Workflow</a>
+  <a class="nav-link" href="#git">Git + Claude Code</a>
+  <a class="nav-link" href="#token">Tiết kiệm token</a>
+  <div class="nav-section">Tham khảo</div>
+  <a class="nav-link" href="#commands">Slash commands</a>
+  <a class="nav-link" href="#troubleshoot">Troubleshoot</a>
+</nav>
+
+<main class="main">
+
+  <div class="hero">
+    <div class="hero-badge">v2.1.81 · Gemini CLI 0.34.0</div>
+    <h1>Hướng dẫn Claude Code + Antigravity</h1>
+    <p style="color:#999;margin:0">Hướng dẫn đầy đủ từ cài đặt đến workflow tối ưu — được viết từ thực tế cài đặt thực tế.</p>
+    <div class="hero-meta">
+      <span class="meta-chip">MacBook Pro M1 2020</span>
+      <span class="meta-chip">macOS Tahoe 26.3.1</span>
+      <span class="meta-chip">16 GB RAM</span>
+      <span class="meta-chip">zsh shell</span>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <h2 id="overview"><span class="section-num">00</span> Tổng quan setup</h2>
+  <p>Setup đầy đủ gồm 3 công cụ hoạt động song song:</p>
+  <div class="steps">
+    <div class="step-item">
+      <div class="step-num" style="background:rgba(66,133,244,0.15);border-color:#4285F4;color:#4285F4">A</div>
+      <div class="step-content">
+        <div class="step-title">Antigravity — IDE lên kế hoạch</div>
+        <div class="step-desc">Agent-first IDE của Google, Gemini 3.1 Pro. Dùng để brainstorm, lên plan, quản lý agent song song. Miễn phí hoàn toàn.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num" style="background:rgba(232,103,58,0.15);border-color:#E8673A;color:#E8673A">C</div>
+      <div class="step-content">
+        <div class="step-title">Claude Code — terminal implement</div>
+        <div class="step-desc">Agentic coding tool của Anthropic. Đọc codebase, viết code, chạy lệnh, quản lý git. Cần Claude Pro hoặc API key.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num" style="background:rgba(52,168,83,0.15);border-color:#34A853;color:#34A853">G</div>
+      <div class="step-content">
+        <div class="step-title">Gemini CLI — backup miễn phí</div>
+        <div class="step-desc">CLI của Google, 1,000 req/ngày free. Dùng khi hết Claude quota. Có Google Search built-in (@web), context 1M token.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANTIGRAVITY -->
+  <h2 id="antigravity"><span class="section-num">01</span> Cài Antigravity</h2>
+  <div class="note note-green">Antigravity hoàn toàn miễn phí trong public preview. Tải tại <strong>antigravity.google/download</strong></div>
+
+  <h3>Cách 1 — Homebrew (khuyến nghị)</h3>
+  <pre><code><span class="cm"># Cài qua Homebrew:</span>
+brew install --cask antigravity
+
+<span class="cm"># Cập nhật khi cần:</span>
+brew upgrade antigravity</code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <h3>Cách 2 — Tải .dmg thủ công</h3>
+  <div class="steps">
+    <div class="step-item"><div class="step-num">1</div><div class="step-content"><div class="step-title">Truy cập antigravity.google/download</div><div class="step-desc">Chọn "Download for Apple Silicon" (M1/M2/M3/M4) — file ~180MB</div></div></div>
+    <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-title">Mở file .dmg → kéo vào Applications</div><div class="step-desc">macOS có thể hiện cảnh báo bảo mật → System Settings → Privacy &amp; Security → Allow</div></div></div>
+    <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-title">Launch → đăng nhập Google Account</div><div class="step-desc">Cấp quyền file system + network khi được hỏi. Setup mất ~2-3 phút lần đầu.</div></div></div>
+  </div>
+
+  <!-- CLAUDE CODE -->
+  <h2 id="claude-code"><span class="section-num">02</span> Cài Claude Code</h2>
+
+  <h3>Cài native installer (không cần Node.js)</h3>
+  <pre><code><span class="cm"># Cài Claude Code — tự động cập nhật:</span>
+<span class="kw">curl</span> -fsSL https://claude.ai/install.sh | bash
+
+<span class="cm"># Fix PATH cho zsh (quan trọng):</span>
+<span class="kw">echo</span> <span class="str">'export PATH="$HOME/.local/bin:$PATH"'</span> >> ~/.zshrc && source ~/.zshrc
+
+<span class="cm"># Kiểm tra thành công:</span>
+claude --version
+<span class="ok-text"># → 2.1.81 (Claude Code) ✓</span></code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <div class="note note-orange">Lần đầu chạy <code style="font-family:var(--mono);font-size:12px">claude</code> trong folder dự án, trình duyệt tự mở để xác thực. Cần Claude Pro ($20/tháng) hoặc API key từ console.anthropic.com.</div>
+
+  <h3>Cài extension Claude Code trong Antigravity</h3>
+  <pre><code><span class="cm"># Trong Antigravity:</span>
+Cmd + Shift + X          <span class="cm">→ mở Extensions</span>
+Tìm: "Claude Code"       <span class="cm">→ cài extension của Anthropic</span>
+Click icon Spark (⚡)    <span class="cm">→ mở panel Claude Code</span>
+
+<span class="cm"># Đăng nhập trong panel:</span>
+/log                     <span class="cm">→ chọn API key hoặc Claude account</span></code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <!-- GEMINI CLI -->
+  <h2 id="gemini-cli"><span class="section-num">03</span> Cài Gemini CLI</h2>
+  <div class="note note-green"><strong>Free tier:</strong> 60 requests/phút · 1,000 requests/ngày · Gemini 2.5 Pro · 1M token context · Không cần credit card</div>
+
+  <h3>Yêu cầu: Node.js 20+</h3>
+  <pre><code><span class="cm"># Kiểm tra version Node:</span>
+node --version
+<span class="cm"># Nếu dưới 20, cài lại:</span>
+brew install node</code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <h3>Fix lỗi EACCES trước khi cài (quan trọng)</h3>
+  <div class="note note-yellow"><strong>Không dùng sudo</strong> — sẽ sinh ra nhiều lỗi permission về sau. Fix đúng cách bằng npm-global:</div>
+  <pre><code><span class="cm"># Fix permission + cài Gemini CLI — chạy toàn bộ 1 lần:</span>
+mkdir -p ~/.npm-global && \
+npm config set prefix <span class="str">'~/.npm-global'</span> && \
+<span class="kw">echo</span> <span class="str">'export PATH="$HOME/.npm-global/bin:$PATH"'</span> >> ~/.zshrc && \
+source ~/.zshrc && \
+npm install -g @google/gemini-cli && \
+gemini --version
+<span class="ok-text"># → 0.34.0  ✓ thành công</span></code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <h3>Đăng nhập lần đầu</h3>
+  <div class="steps">
+    <div class="step-item"><div class="step-num">1</div><div class="step-content"><div class="step-title">Mở Gemini CLI trong folder dự án</div><div class="step-desc"><code style="font-family:var(--mono);font-size:11px">cd ~/your-project && gemini</code></div></div></div>
+    <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-title">Chọn theme → chọn "Login with Google"</div><div class="step-desc">Trình duyệt mở ra → đăng nhập Google Account cá nhân (không dùng Workspace)</div></div></div>
+    <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-title">Khởi tạo project</div><div class="step-desc">Gõ <code style="font-family:var(--mono);font-size:11px">/init</code> → Gemini CLI tạo GEMINI.md, đọc codebase</div></div></div>
+  </div>
+
+  <!-- ZSHRC -->
+  <h2 id="zshrc"><span class="section-num">04</span> File ~/.zshrc hoàn chỉnh</h2>
+  <p>Toàn bộ config cần thiết — paste vào cuối file <code style="font-family:var(--mono);font-size:13px">~/.zshrc</code>:</p>
+  <pre><code><span class="cm"># ════════════════════════════════════════
+# AI Coding Tools — Claude Code + Gemini
+# Thêm vào cuối ~/.zshrc
+# ════════════════════════════════════════</span>
+
+<span class="cm"># PATH</span>
+export PATH=<span class="str">"$HOME/.local/bin:$PATH"</span>          <span class="cm"># Claude Code</span>
+export PATH=<span class="str">"$HOME/.npm-global/bin:$PATH"</span>      <span class="cm"># Gemini CLI + npm global</span>
+
+<span class="cm"># API Keys (thay bằng key thật)</span>
+export KIMI_API_KEY=<span class="str">"sk-your-kimi-key"</span>
+export OR_API_KEY=<span class="str">"sk-or-v1-your-openrouter-key"</span>
+
+<span class="cm"># ── Claude Code aliases ──────────────────</span>
+alias cc=<span class="str">'claude'</span>                                 <span class="cm"># Sonnet 4.6 mặc định</span>
+alias cco=<span class="str">'claude --model claude-opus-4-6'</span>         <span class="cm"># Opus — task khó</span>
+alias cch=<span class="str">'claude --model claude-haiku-4-5-20251001'</span> <span class="cm"># Haiku — nhanh/rẻ</span>
+alias cck=<span class="str">'ANTHROPIC_BASE_URL="https://api.moonshot.cn/v1" ANTHROPIC_API_KEY="$KIMI_API_KEY" claude --model kimi-k2-0711-preview'</span>
+alias ccor=<span class="str">'ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1" ANTHROPIC_API_KEY="$OR_API_KEY" claude --model deepseek/deepseek-r2'</span>
+alias ccg=<span class="str">'ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1" ANTHROPIC_API_KEY="$OR_API_KEY" claude --model google/gemini-2.5-pro'</span>
+
+<span class="cm"># ── Gemini CLI alias ─────────────────────</span>
+alias gm=<span class="str">'gemini'</span>                                 <span class="cm"># Gemini CLI free</span>
+
+<span class="cm"># ════════════════════════════════════════</span></code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <pre><code><span class="cm"># Áp dụng ngay:</span>
+source ~/.zshrc
+
+<span class="cm"># Test tất cả alias:</span>
+cc --version    <span class="ok-text"># → 2.1.81 (Claude Code)</span>
+gm --version    <span class="ok-text"># → 0.34.0</span></code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <h3>Bảng alias nhanh</h3>
+  <table class="alias-table">
+    <tr><td class="alias-cmd">cc</td><td class="alias-arrow">→</td><td class="alias-desc">Claude Code Sonnet 4.6 — dùng hàng ngày, 90% task</td><td class="alias-use">default</td></tr>
+    <tr><td class="alias-cmd">cco</td><td class="alias-arrow">→</td><td class="alias-desc">Claude Code Opus 4.6 — refactor lớn, debug khó</td><td class="alias-use">task phức tạp</td></tr>
+    <tr><td class="alias-cmd">cch</td><td class="alias-arrow">→</td><td class="alias-desc">Claude Code Haiku — bulk task, generate nhanh</td><td class="alias-use">rẻ/nhanh</td></tr>
+    <tr><td class="alias-cmd">cck</td><td class="alias-arrow">→</td><td class="alias-desc">Kimi K2 — free tier, backup khi hết Claude</td><td class="alias-use">free</td></tr>
+    <tr><td class="alias-cmd">ccor</td><td class="alias-arrow">→</td><td class="alias-desc">OpenRouter + Deepseek R2 — rẻ nhất ($0.14/1M)</td><td class="alias-use">$0.14/1M</td></tr>
+    <tr><td class="alias-cmd">ccg</td><td class="alias-arrow">→</td><td class="alias-desc">OpenRouter + Gemini 2.5 Pro</td><td class="alias-use">alternative</td></tr>
+    <tr><td class="alias-cmd">gm</td><td class="alias-arrow">→</td><td class="alias-desc">Gemini CLI — 1,000 req/ngày miễn phí</td><td class="alias-use">free backup</td></tr>
+  </table>
+
+  <!-- MCP -->
+  <h2 id="mcp"><span class="section-num">05</span> Cài MCP servers</h2>
+  <p>MCP (Model Context Protocol) cho phép Claude Code và Gemini CLI gọi tool bên ngoài — GitHub, Supabase, Slack...</p>
+
+  <h3>Config file: ~/.claude/settings.json</h3>
+  <pre><code>{
+  <span class="str">"model"</span>: <span class="str">"claude-sonnet-4-6"</span>,
+  <span class="str">"mcpServers"</span>: {
+    <span class="str">"github"</span>: {
+      <span class="str">"command"</span>: <span class="str">"npx"</span>,
+      <span class="str">"args"</span>: [<span class="str">"-y"</span>, <span class="str">"@modelcontextprotocol/server-github"</span>],
+      <span class="str">"env"</span>: { <span class="str">"GITHUB_TOKEN"</span>: <span class="str">"your_token"</span> }
+    },
+    <span class="str">"filesystem"</span>: {
+      <span class="str">"command"</span>: <span class="str">"npx"</span>,
+      <span class="str">"args"</span>: [<span class="str">"-y"</span>, <span class="str">"@modelcontextprotocol/server-filesystem"</span>, <span class="str">"~/projects"</span>]
+    }
+  }
+}</code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <pre><code><span class="cm"># Quản lý MCP trong Claude Code:</span>
+/mcp            <span class="cm">→ xem MCP đang kết nối</span>
+/mcp add        <span class="cm">→ thêm MCP server mới</span>
+/mcp status     <span class="cm">→ kiểm tra kết nối</span></code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <!-- MODELS -->
+  <h2 id="models"><span class="section-num">06</span> Thêm model — Kimi K2 &amp; OpenRouter</h2>
+
+  <h3>Kimi K2 — miễn phí</h3>
+  <p>Lấy API key tại <strong>platform.moonshot.cn</strong> → đã có sẵn trong alias <code style="font-family:var(--mono);font-size:13px">cck</code>.</p>
+
+  <h3>OpenRouter — 100+ model với 1 key</h3>
+  <p>Đăng ký tại <strong>openrouter.ai</strong>, nạp $5, lấy key. Đã có sẵn trong alias <code style="font-family:var(--mono);font-size:13px">ccor</code> và <code style="font-family:var(--mono);font-size:13px">ccg</code>.</p>
+  <table class="cmp">
+    <tr><th>Model</th><th>Giá</th><th>Tốt cho</th></tr>
+    <tr><td style="font-family:var(--mono)">deepseek/deepseek-r2</td><td>$0.14/1M</td><td>Code task rẻ nhất</td></tr>
+    <tr><td style="font-family:var(--mono)">google/gemini-2.5-pro</td><td>$1.25/1M</td><td>Cần context dài</td></tr>
+    <tr><td style="font-family:var(--mono)">qwen/qwen3-235b-a22b</td><td>$0.13/1M</td><td>Code + reasoning</td></tr>
+    <tr><td style="font-family:var(--mono)">kimi-k2-0711-preview</td><td>Free tier</td><td>Backup Claude</td></tr>
+  </table>
+
+  <!-- WORKFLOW -->
+  <h2 id="workflow"><span class="section-num">07</span> Workflow kết hợp tối ưu</h2>
+
+  <div class="steps">
+    <div class="step-item">
+      <div class="step-num" style="background:rgba(66,133,244,0.15);border-color:#4285F4;color:#4285F4">1</div>
+      <div class="step-content">
+        <div class="step-title">Antigravity (Gemini 3.1) — lên kế hoạch</div>
+        <div class="step-desc">Chat box bên phải Antigravity. Mô tả tính năng → Gemini trả về plan + file structure. Tiết kiệm Claude token cho bước planning.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num" style="background:rgba(232,103,58,0.15);border-color:#E8673A;color:#E8673A">2</div>
+      <div class="step-content">
+        <div class="step-title">Claude Code (Sonnet 4.6) — implement</div>
+        <div class="step-desc">Copy plan từ Antigravity → paste vào Claude Code terminal. Claude Code viết code, tạo file, chạy lệnh. Approve từng action.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num" style="background:rgba(52,168,83,0.15);border-color:#34A853;color:#34A853">3</div>
+      <div class="step-content">
+        <div class="step-title">Git commit sau mỗi feature</div>
+        <div class="step-desc"><code style="font-family:var(--mono);font-size:11px">git add . && git commit -m "feat: ..."</code> — lưới an toàn quan trọng nhất.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num" style="background:rgba(229,192,123,0.15);border-color:#E5C07B;color:#E5C07B">4</div>
+      <div class="step-content">
+        <div class="step-title">Khi hết Claude quota → chuyển sang gm</div>
+        <div class="step-desc">Gemini CLI có 1,000 req/ngày free. Dùng <code style="font-family:var(--mono);font-size:11px">@web</code> để search docs realtime trong lúc code.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GIT -->
+  <h2 id="git"><span class="section-num">08</span> Git + Claude Code</h2>
+  <pre><code><span class="cm"># Khởi tạo git cho dự án mới:</span>
+git init && git add . && git commit -m <span class="str">"init: setup project"</span>
+
+<span class="cm"># Vòng lặp làm việc chuẩn:</span>
+<span class="cm"># 1. Giao task cho Claude Code</span>
+<span class="cm"># 2. Test kết quả (Go Live port 5500)</span>
+git add . && git commit -m <span class="str">"feat: add hero section"</span>
+<span class="cm"># 3. Lặp lại</span>
+
+<span class="cm"># Rollback khi Claude Code làm hỏng:</span>
+git checkout .          <span class="cm"># huỷ TẤT CẢ thay đổi chưa commit</span>
+
+<span class="cm"># Quay về commit cũ hơn:</span>
+git log --oneline       <span class="cm"># xem lịch sử</span>
+git reset --soft abc123 <span class="cm"># quay về commit đó, giữ code</span></code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <!-- TOKEN -->
+  <h2 id="token"><span class="section-num">09</span> Tiết kiệm token</h2>
+  <pre><code><span class="cm"># Tóm tắt context sau 20-30 lượt:</span>
+/compact
+
+<span class="cm"># Bắt đầu session mới khi chuyển task:</span>
+/clear
+
+<span class="cm"># Xem memory Claude đang lưu:</span>
+/memory
+
+<span class="cm"># Xem quota Gemini CLI:</span>
+/stats model</code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <div class="note note-blue">
+    <strong>Tips tiết kiệm token hiệu quả nhất:</strong><br>
+    · Dùng Gemini (Antigravity) để planning — không tốn Claude token<br>
+    · Viết CLAUDE.md chi tiết — Claude đọc 1 lần thay vì giải thích lại mỗi session<br>
+    · Chỉ hỏi về file liên quan, không paste toàn bộ codebase<br>
+    · /compact sau 20-30 lượt, /clear khi chuyển task hoàn toàn mới
+  </div>
+
+  <!-- COMMANDS -->
+  <h2 id="commands"><span class="section-num">10</span> Slash commands tham khảo</h2>
+  <table class="cmp">
+    <tr><th>Lệnh</th><th>Claude Code</th><th>Gemini CLI</th></tr>
+    <tr><td style="font-family:var(--mono)">/init</td><td>Tạo CLAUDE.md, đọc codebase</td><td>Tạo GEMINI.md, đọc codebase</td></tr>
+    <tr><td style="font-family:var(--mono)">/compact</td><td>Tóm tắt context dài</td><td>—</td></tr>
+    <tr><td style="font-family:var(--mono)">/clear</td><td>Xóa conversation</td><td>Xóa conversation</td></tr>
+    <tr><td style="font-family:var(--mono)">/model</td><td>Chuyển model</td><td>Xem model hiện tại</td></tr>
+    <tr><td style="font-family:var(--mono)">/mcp</td><td>Quản lý MCP servers</td><td>—</td></tr>
+    <tr><td style="font-family:var(--mono)">/memory</td><td>Xem memory tự động</td><td>—</td></tr>
+    <tr><td style="font-family:var(--mono)">/stats</td><td>—</td><td>Xem token đã dùng hôm nay</td></tr>
+    <tr><td style="font-family:var(--mono)">@web</td><td>—</td><td><span class="win">Google Search realtime (độc quyền)</span></td></tr>
+    <tr><td style="font-family:var(--mono)">/bug</td><td>Báo lỗi cho Anthropic</td><td>Báo lỗi cho Google</td></tr>
+  </table>
+
+  <!-- TROUBLESHOOT -->
+  <h2 id="troubleshoot"><span class="section-num">11</span> Troubleshoot thường gặp</h2>
+
+  <h3>claude: command not found</h3>
+  <pre><code>echo <span class="str">'export PATH="$HOME/.local/bin:$PATH"'</span> >> ~/.zshrc && source ~/.zshrc</code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <h3>npm EACCES permission denied</h3>
+  <pre><code>mkdir -p ~/.npm-global && npm config set prefix <span class="str">'~/.npm-global'</span>
+echo <span class="str">'export PATH="$HOME/.npm-global/bin:$PATH"'</span> >> ~/.zshrc && source ~/.zshrc</code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <h3>Claude Code hết quota giữa chừng</h3>
+  <pre><code><span class="cm"># Chuyển sang Gemini CLI ngay:</span>
+gm                <span class="cm">→ 1,000 req/ngày free</span>
+<span class="cm"># Hoặc Kimi K2:</span>
+cck               <span class="cm">→ free tier</span></code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <h3>Context quá dài, Claude bắt đầu "quên"</h3>
+  <pre><code>/compact          <span class="cm">→ tóm tắt giữ lại context quan trọng</span>
+<span class="cm"># Hoặc bắt đầu lại:</span>
+/clear            <span class="cm">→ session mới với CLAUDE.md làm context</span></code><button class="copy-btn" onclick="copyCode(this)">copy</button></pre>
+
+  <div class="footer">
+    <p>Tổng hợp từ session cài đặt thực tế · MacBook Pro M1 2020 · Tháng 3/2026</p>
+    <p style="margin-top:6px">Claude Code docs: <a href="https://docs.anthropic.com/en/docs/claude-code/overview">docs.anthropic.com</a> · Gemini CLI: <a href="https://github.com/google-gemini/gemini-cli">github.com/google-gemini/gemini-cli</a> · Antigravity: <a href="https://antigravity.google">antigravity.google</a></p>
+  </div>
+
+</main>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.closest('pre');
+  const code = pre.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'copied!';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('ok'); }, 2000);
+  });
+}
+
+// Active nav on scroll
+const sections = document.querySelectorAll('h2[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
+  navLinks.forEach(l => {
+    l.classList.remove('active');
+    if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
