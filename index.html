@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,8 +24,16 @@
       --radius: 12px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       background-color: var(--bg);
       color: var(--text);
@@ -35,245 +44,886 @@
     }
 
     /* ===== LAYOUT ===== */
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-    section { padding: 100px 0; opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
-    section.visible { opacity: 1; transform: translateY(0); }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 100px 0;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: 0.8s ease-out;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     /* ===== NAVBAR ===== */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
       background: rgba(13, 13, 13, 0.8);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      z-index: 1000; transition: transform 0.3s ease;
+      z-index: 1000;
+      transition: transform 0.3s ease;
     }
-    nav.nav-hidden { transform: translateY(-100%); }
+
+    nav.nav-hidden {
+      transform: translateY(-100%);
+    }
+
     .nav-container {
-      max-width: 1200px; margin: 0 auto; height: 100%;
-      display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
     }
-    .logo { font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
-    .logo span { color: var(--accent-anthropic); }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo span {
+      color: var(--accent-anthropic);
+    }
+
     .badge-m1 {
-      font-size: 10px; background: var(--border); padding: 2px 8px;
-      border-radius: 20px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;
+      font-size: 10px;
+      background: var(--border);
+      padding: 2px 8px;
+      border-radius: 20px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
-    .nav-links { display: flex; gap: 32px; align-items: center; }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
     .nav-links a {
-      text-decoration: none; color: var(--text-muted); font-size: 14px;
-      font-weight: 500; transition: var(--transition);
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: var(--transition);
     }
-    .nav-links a:hover { color: var(--text); }
-    .menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
 
     /* Mobile Menu Overlay */
     .mobile-overlay {
-      position: fixed; inset: 0; background: var(--bg); z-index: 999;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 30px; transform: translateX(100%); transition: 0.3s ease;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      transform: translateX(100%);
+      transition: 0.3s ease;
     }
-    .mobile-overlay.active { transform: translateX(0); }
-    .mobile-overlay a { font-size: 1.5rem; text-decoration: none; color: var(--text); font-weight: 600; }
+
+    .mobile-overlay.active {
+      transform: translateX(0);
+    }
+
+    .mobile-overlay a {
+      font-size: 1.5rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+    }
 
     /* ===== HERO ===== */
     #hero {
-      height: 100vh; min-height: 700px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding-top: var(--nav-height);
+      height: 100vh;
+      min-height: 700px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: var(--nav-height);
     }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 16px; border-radius: 40px; border: 1px solid var(--border);
-      font-size: 13px; color: var(--text-muted); margin-bottom: 32px;
-    }
-    .hero-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-anthropic); }
-    h1 {
-      font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1.1; font-weight: 800;
-      letter-spacing: -0.03em; margin-bottom: 24px;
-    }
-    .subtext { font-size: 1.2rem; color: var(--text-muted); max-width: 650px; margin-bottom: 40px; }
-    .hero-ctas { display: flex; gap: 16px; margin-bottom: 64px; }
-    .btn {
-      padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 16px;
-      cursor: pointer; transition: var(--transition); text-decoration: none; display: inline-block;
-    }
-    .btn-primary { background: var(--accent-anthropic); color: white; border: none; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(232, 103, 58, 0.3); }
-    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
-    .btn-secondary:hover { background: var(--surface); border-color: var(--text-muted); }
 
-    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; width: 100%; max-width: 800px; }
-    .stat-card {
-      background: var(--surface); border: 1px solid var(--border); padding: 16px;
-      border-radius: var(--radius); text-align: left;
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 40px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
     }
-    .stat-val { font-family: var(--font-mono); font-size: 14px; font-weight: 600; display: block; margin-bottom: 4px; }
-    .stat-label { font-size: 12px; color: var(--text-muted); }
+
+    .hero-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-anthropic);
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+
+    .subtext {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin-bottom: 40px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 64px;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--accent-anthropic);
+      color: white;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(232, 103, 58, 0.3);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface);
+      border-color: var(--text-muted);
+    }
+
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: var(--radius);
+      text-align: left;
+    }
+
+    .stat-val {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
 
     /* ===== TERMINAL MOCKUP ===== */
     .terminal {
-      width: 100%; max-width: 700px; background: #1A1A1A; border-radius: 10px;
-      margin-top: 60px; text-align: left; box-shadow: 0 40px 100px rgba(0,0,0,0.5);
-      border: 1px solid #333; overflow: hidden;
+      width: 100%;
+      max-width: 700px;
+      background: #1A1A1A;
+      border-radius: 10px;
+      margin-top: 60px;
+      text-align: left;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+      border: 1px solid #333;
+      overflow: hidden;
     }
+
     .terminal-header {
-      padding: 12px 16px; background: #252525; display: flex; gap: 6px; align-items: center;
+      padding: 12px 16px;
+      background: #252525;
+      display: flex;
+      gap: 6px;
+      align-items: center;
     }
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .dot-r { background: #FF5F56; } .dot-y { background: #FFBD2E; } .dot-g { background: #27C93F; }
-    .terminal-body { padding: 20px; font-family: var(--font-mono); font-size: 14px; min-height: 120px; }
-    .cursor { display: inline-block; width: 8px; height: 18px; background: var(--text); vertical-align: middle; animation: blink 1s step-end infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot-r {
+      background: #FF5F56;
+    }
+
+    .dot-y {
+      background: #FFBD2E;
+    }
+
+    .dot-g {
+      background: #27C93F;
+    }
+
+    .terminal-body {
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      min-height: 120px;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 18px;
+      background: var(--text);
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
 
     /* ===== TOOLS SECTION ===== */
-    .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-    .tool-card {
-      background: var(--surface); border: 1px solid var(--border); padding: 32px;
-      border-radius: var(--radius); transition: var(--transition);
-      display: flex; flex-direction: column; gap: 16px;
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
     }
-    .tool-card:hover { border-color: var(--card-color); box-shadow: 0 0 40px -10px var(--card-color-alpha); transform: translateY(-4px); }
-    .tool-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 10px; margin-bottom: 8px; }
-    .tool-card h3 { font-size: 1.4rem; font-weight: 700; }
-    .tool-card p { font-size: 14px; color: var(--text-muted); }
-    .tool-tag { font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+
+    .tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 32px;
+      border-radius: var(--radius);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tool-card:hover {
+      border-color: var(--card-color);
+      box-shadow: 0 0 40px -10px var(--card-color-alpha);
+      transform: translateY(-4px);
+    }
+
+    .tool-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .tool-card h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .tool-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .tool-tag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+    }
 
     /* ===== CÀI ĐẶT (ACCORDION) ===== */
-    #setup .container { max-width: 800px; }
-    .accordion { display: flex; flex-direction: column; gap: 16px; }
-    .acc-item { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+    #setup .container {
+      max-width: 800px;
+    }
+
+    .accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .acc-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+    }
+
     .acc-header {
-      padding: 24px; cursor: pointer; display: flex; align-items: center; gap: 20px;
-      user-select: none; transition: background 0.2s;
+      padding: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      user-select: none;
+      transition: background 0.2s;
     }
-    .acc-header:hover { background: #1C1C1C; }
+
+    .acc-header:hover {
+      background: #1C1C1C;
+    }
+
     .acc-num {
-      width: 32px; height: 32px; background: var(--border); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--text-muted);
+      width: 32px;
+      height: 32px;
+      background: var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
     }
-    .acc-item.active .acc-num { background: var(--accent-anthropic); color: white; }
-    .acc-title { font-weight: 600; font-size: 18px; flex: 1; }
-    .acc-icon { transition: 0.3s; }
-    .acc-item.active .acc-icon { transform: rotate(180deg); }
-    .acc-body { max-height: 0; transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
-    .acc-content { padding: 0 24px 24px 76px; }
-    .acc-content p { color: var(--text-muted); font-size: 15px; margin-bottom: 16px; }
+
+    .acc-item.active .acc-num {
+      background: var(--accent-anthropic);
+      color: white;
+    }
+
+    .acc-title {
+      font-weight: 600;
+      font-size: 18px;
+      flex: 1;
+    }
+
+    .acc-icon {
+      transition: 0.3s;
+    }
+
+    .acc-item.active .acc-icon {
+      transform: rotate(180deg);
+    }
+
+    .acc-body {
+      max-height: 0;
+      transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+
+    .acc-content {
+      padding: 0 24px 24px 76px;
+    }
+
+    .acc-content p {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 16px;
+    }
 
     /* CODE BLOCK */
     .code-block {
-      background: #000; border: 1px solid var(--border); border-radius: 8px;
-      padding: 16px; position: relative; display: flex; align-items: center; justify-content: space-between;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .code-block code { font-family: var(--font-mono); font-size: 13px; color: #D1D1D1; word-break: break-all; }
+
+    .code-block code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #D1D1D1;
+      word-break: break-all;
+    }
+
     .copy-btn {
-      background: var(--border); border: none; border-radius: 4px; padding: 6px 10px;
-      cursor: pointer; color: var(--text-muted); font-size: 12px; transition: 0.2s; flex-shrink: 0; margin-left: 12px;
+      background: var(--border);
+      border: none;
+      border-radius: 4px;
+      padding: 6px 10px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 12px;
+      transition: 0.2s;
+      flex-shrink: 0;
+      margin-left: 12px;
     }
-    .copy-btn:hover { background: #3A3A3A; color: var(--text); }
-    .copy-btn.copied { background: var(--accent-gemini); color: white; }
+
+    .copy-btn:hover {
+      background: #3A3A3A;
+      color: var(--text);
+    }
+
+    .copy-btn.copied {
+      background: var(--accent-gemini);
+      color: white;
+    }
 
     /* ===== WORKFLOW (TIMELINE) ===== */
-    .timeline { display: flex; justify-content: space-between; position: relative; margin-top: 60px; }
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin-top: 60px;
+    }
+
     .timeline::before {
-      content: ''; position: absolute; top: 24px; left: 0; right: 0; height: 1px;
-      background: var(--border); z-index: 1;
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--border);
+      z-index: 1;
     }
-    .tm-item { position: relative; z-index: 2; text-align: center; flex: 1; }
+
+    .tm-item {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      flex: 1;
+    }
+
     .tm-dot {
-      width: 48px; height: 48px; background: var(--surface); border: 2px solid var(--border);
-      border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;
-      font-size: 20px; transition: var(--transition);
+      width: 48px;
+      height: 48px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: var(--transition);
     }
-    .tm-item:hover .tm-dot { border-color: var(--item-color); transform: scale(1.1); }
-    .tm-title { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
-    .tm-desc { font-size: 13px; color: var(--text-muted); padding: 0 10px; }
+
+    .tm-item:hover .tm-dot {
+      border-color: var(--item-color);
+      transform: scale(1.1);
+    }
+
+    .tm-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .tm-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 0 10px;
+    }
 
     /* ===== TABS COMPONENT ===== */
-    .tabs-container { margin-top: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
-    .tab-headers { display: flex; background: #1A1A1A; border-bottom: 1px solid var(--border); overflow-x: auto; }
+    .tabs-container {
+      margin-top: 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .tab-headers {
+      display: flex;
+      background: #1A1A1A;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
     .tab-header {
-      padding: 16px 24px; cursor: pointer; font-weight: 600; font-size: 14px;
-      color: var(--text-muted); transition: var(--transition); white-space: nowrap;
+      padding: 16px 24px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-muted);
+      transition: var(--transition);
+      white-space: nowrap;
       border-right: 1px solid var(--border);
     }
-    .tab-header:hover { color: var(--text); background: #222; }
-    .tab-header.active { color: var(--accent-anthropic); background: var(--surface); position: relative; }
-    .tab-header.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent-anthropic); }
-    .tab-content { padding: 32px; display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.3s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .tab-header:hover {
+      color: var(--text);
+      background: #222;
+    }
+
+    .tab-header.active {
+      color: var(--accent-anthropic);
+      background: var(--surface);
+      position: relative;
+    }
+
+    .tab-header.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent-anthropic);
+    }
+
+    .tab-content {
+      padding: 32px;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     /* ===== CALLOUT ===== */
     .callout {
-      background: rgba(232, 103, 58, 0.05); border: 1px solid rgba(232, 103, 58, 0.2);
-      border-radius: var(--radius); padding: 24px; margin-bottom: 32px; display: flex; gap: 16px; align-items: flex-start;
+      background: rgba(232, 103, 58, 0.05);
+      border: 1px solid rgba(232, 103, 58, 0.2);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 32px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
     }
-    .callout-icon { font-size: 24px; line-height: 1; }
-    .callout-content p { font-size: 15px; color: var(--text); margin: 0; }
-    .callout-content b { color: var(--accent-anthropic); }
 
-    .fix-step { margin-bottom: 24px; }
-    .fix-step h5 { color: var(--accent-gemini); margin-bottom: 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .callout-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .callout-content p {
+      font-size: 15px;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .callout-content b {
+      color: var(--accent-anthropic);
+    }
+
+    .fix-step {
+      margin-bottom: 24px;
+    }
+
+    .fix-step h5 {
+      color: var(--accent-gemini);
+      margin-bottom: 8px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
 
     /* ===== MODELS TABLE ===== */
-    .table-container { overflow-x: auto; margin-top: 40px; border: 1px solid var(--border); border-radius: var(--radius); }
-    table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
-    th { background: #1A1A1A; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: 16px 24px; font-weight: 600; }
-    td { padding: 16px 24px; border-top: 1px solid var(--border); font-size: 14px; }
-    tr:nth-child(even) { background-color: #141414; }
-    tr:nth-child(odd) { background-color: #111111; }
-    .alias { font-family: var(--font-mono); color: var(--accent-anthropic); font-weight: 700; }
+    .table-container {
+      overflow-x: auto;
+      margin-top: 40px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      min-width: 600px;
+    }
+
+    th {
+      background: #1A1A1A;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 16px 24px;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #141414;
+    }
+
+    tr:nth-child(odd) {
+      background-color: #111111;
+    }
+
+    .alias {
+      font-family: var(--font-mono);
+      color: var(--accent-anthropic);
+      font-weight: 700;
+    }
 
     /* ===== TIPS ===== */
-    .tips-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
-    .tip-card { background: var(--surface); border: 1px solid var(--border); padding: 24px; border-radius: var(--radius); }
-    .tip-card h4 { font-weight: 700; margin-bottom: 12px; font-size: 1.1rem; }
-    .tip-card p { font-size: 14px; color: var(--text-muted); }
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .tip-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+      border-radius: var(--radius);
+    }
+
+    .tip-card h4 {
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+    }
+
+    .tip-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
 
     /* ===== SECTION HEADERS ===== */
-    .section-header { text-align: center; margin-bottom: 60px; }
-    .section-header h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 16px; }
-    .section-header p { color: var(--text-muted); font-size: 1.1rem; }
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
 
     /* ===== CTA & FOOTER ===== */
-    #cta { background: #080808; text-align: center; padding: 120px 0; border-top: 1px solid var(--border); }
-    footer { padding: 60px 0; border-top: 1px solid var(--border); }
-    .footer-content { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; }
-    .footer-brand { max-width: 300px; }
-    .footer-brand p { font-size: 14px; color: var(--text-muted); margin-top: 12px; }
-    .footer-links-group { display: flex; gap: 60px; }
-    .footer-col h5 { font-size: 14px; color: var(--text); margin-bottom: 20px; }
-    .footer-col ul { list-style: none; }
-    .footer-col li { margin-bottom: 12px; }
-    .footer-col a { text-decoration: none; color: var(--text-muted); font-size: 14px; transition: 0.2s; }
-    .footer-col a:hover { color: var(--text); }
-    .copyright { margin-top: 60px; padding-top: 30px; border-top: 1px solid #1A1A1A; text-align: center; color: var(--text-muted); font-size: 12px; }
+    #cta {
+      background: #080808;
+      text-align: center;
+      padding: 120px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    footer {
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .footer-brand {
+      max-width: 300px;
+    }
+
+    .footer-brand p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    .footer-links-group {
+      display: flex;
+      gap: 60px;
+    }
+
+    .footer-col h5 {
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col li {
+      margin-bottom: 12px;
+    }
+
+    .footer-col a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .footer-col a:hover {
+      color: var(--text);
+    }
+
+    .copyright {
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 1px solid #1A1A1A;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1024px) {
-      .tools-grid, .tips-grid { grid-template-columns: repeat(2, 1fr); }
-      .timeline { overflow-x: auto; padding-bottom: 20px; gap: 20px; }
-      .tm-item { min-width: 180px; }
-      .timeline::before { display: none; }
+
+      .tools-grid,
+      .tips-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .timeline {
+        overflow-x: auto;
+        padding-bottom: 20px;
+        gap: 20px;
+      }
+
+      .tm-item {
+        min-width: 180px;
+      }
+
+      .timeline::before {
+        display: none;
+      }
     }
+
     @media (max-width: 768px) {
-      h1 { font-size: 2.8rem; }
-      .nav-links { display: none; }
-      .menu-btn { display: block; }
-      .stat-cards { grid-template-columns: 1fr; }
-      .tools-grid, .tips-grid { grid-template-columns: 1fr; }
-      .hero-ctas { flex-direction: column; width: 100%; max-width: 300px; }
-      .btn { text-align: center; }
-      .acc-content { padding-left: 24px; }
-      .footer-links-group { gap: 30px; width: 100%; justify-content: space-between; }
-      .timeline { flex-direction: column; gap: 40px; align-items: center; }
-      .tm-item { min-width: auto; width: 100%; max-width: 300px; }
+      h1 {
+        font-size: 2.8rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+
+      .stat-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .tools-grid,
+      .tips-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .btn {
+        text-align: center;
+      }
+
+      .acc-content {
+        padding-left: 24px;
+      }
+
+      .footer-links-group {
+        gap: 30px;
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .timeline {
+        flex-direction: column;
+        gap: 40px;
+        align-items: center;
+      }
+
+      .tm-item {
+        min-width: auto;
+        width: 100%;
+        max-width: 300px;
+      }
     }
 
     /* SVG Icons */
-    .icon-svg { width: 24px; height: 24px; fill: currentColor; }
+    .icon-svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- MOBILE OVERLAY -->
@@ -290,7 +940,7 @@
     <div class="nav-container">
       <div class="logo">
         <svg class="icon-svg" viewBox="0 0 24 24" style="color:var(--accent-anthropic)">
-          <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/>
+          <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z" />
         </svg>
         Claude <span>Code</span>
         <span class="badge-m1">M1 Setup</span>
@@ -301,11 +951,12 @@
         <a href="#github">GitHub</a>
         <a href="#models">Models</a>
         <a href="#tips">Tips</a>
-        <a href="https://docs.anthropic.com/claude-code" target="_blank" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Tài liệu ↗</a>
+        <a href="https://docs.anthropic.com/claude-code" target="_blank" class="btn btn-secondary"
+          style="padding: 8px 16px; font-size: 13px;">Tài liệu ↗</a>
       </div>
       <button class="menu-btn" onclick="toggleMenu()" id="menuBtn">
         <svg class="icon-svg" viewBox="0 0 24 24" style="fill:var(--text)">
-          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
         </svg>
       </button>
     </div>
@@ -316,11 +967,12 @@
     <div class="container">
       <div class="hero-badge">MacBook Pro M1 · macOS Tahoe · Tháng 3/2026</div>
       <h1>Setup Claude Code +<br>Antigravity + Gemini CLI</h1>
-      <p class="subtext">Hướng dẫn đầy đủ từ thực tế triển khai — tối ưu hóa quy trình coding cho developer Việt Nam trên nền tảng Apple Silicon.</p>
-      
+      <p class="subtext">Hướng dẫn đầy đủ từ thực tế triển khai — tối ưu hóa quy trình coding cho developer Việt Nam
+        trên nền tảng Apple Silicon.</p>
+
       <div class="hero-ctas">
         <a href="#setup" class="btn btn-primary">Bắt đầu cài đặt</a>
-        <a href="https://github.com/google/gemini-cli" target="_blank" class="btn btn-secondary">Xem tài liệu CLI</a>
+        <a href="https://geminicli.com/" target="_blank" class="btn btn-secondary">Xem tài liệu CLI</a>
       </div>
 
       <div class="stat-cards">
@@ -343,7 +995,8 @@
           <div class="dot dot-r"></div>
           <div class="dot dot-y"></div>
           <div class="dot dot-g"></div>
-          <span style="font-size: 11px; color: #666; margin-left: 8px; font-family: var(--font-mono);">zsh — 80x24</span>
+          <span style="font-size: 11px; color: #666; margin-left: 8px; font-family: var(--font-mono);">zsh —
+            80x24</span>
         </div>
         <div class="terminal-body" id="typewriter">
           <span id="typedText"></span><span class="cursor"></span>
@@ -363,32 +1016,48 @@
         <!-- Antigravity -->
         <div class="tool-card" style="--card-color: var(--accent-google); --card-color-alpha: rgba(66, 133, 244, 0.2);">
           <div class="tool-icon" style="background: rgba(66, 133, 244, 0.1); color: var(--accent-google);">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <svg class="icon-svg" viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
           </div>
           <span class="tool-tag" style="color: var(--accent-google);">GOOGLE / IDE</span>
           <h3>Antigravity</h3>
-          <p>IDE agent-first thế hệ mới. Chuyên dùng để lên kế hoạch kiến trúc, review code và quản lý file trực quan.</p>
-          <div class="tool-tag" style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block;">Gemini 3.1 Pro · Miễn phí</div>
+          <p>IDE agent-first thế hệ mới. Chuyên dùng để lên kế hoạch kiến trúc, review code và quản lý file trực quan.
+          </p>
+          <div class="tool-tag"
+            style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block;">
+            Gemini 3.1 Pro · Miễn phí</div>
         </div>
         <!-- Claude Code -->
-        <div class="tool-card" style="--card-color: var(--accent-anthropic); --card-color-alpha: rgba(232, 103, 58, 0.2);">
+        <div class="tool-card"
+          style="--card-color: var(--accent-anthropic); --card-color-alpha: rgba(232, 103, 58, 0.2);">
           <div class="tool-icon" style="background: rgba(232, 103, 58, 0.1); color: var(--accent-anthropic);">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+            <svg class="icon-svg" viewBox="0 0 24 24">
+              <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
+            </svg>
           </div>
           <span class="tool-tag" style="color: var(--accent-anthropic);">ANTHROPIC / CLI</span>
           <h3>Claude Code</h3>
           <p>Mạnh mẽ nhất trong việc thực thi. Claude trực tiếp viết code, sửa bug và chạy test ngay trong terminal.</p>
-          <div class="tool-tag" style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block;">Sonnet 4.6 · Pro $20/tháng</div>
+          <div class="tool-tag"
+            style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block;">
+            Sonnet 4.6 · Pro $20/tháng</div>
         </div>
         <!-- Gemini CLI -->
         <div class="tool-card" style="--card-color: var(--accent-gemini); --card-color-alpha: rgba(52, 168, 83, 0.2);">
           <div class="tool-icon" style="background: rgba(52, 168, 83, 0.1); color: var(--accent-gemini);">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44a.99.99 0 01-.93 0l-7.9-4.44A.993.993 0 013 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.09.34-.14.53-.14s.37.05.53.14l7.9 4.44c.32.17.53.5.53.88v9z"/></svg>
+            <svg class="icon-svg" viewBox="0 0 24 24">
+              <path
+                d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44a.99.99 0 01-.93 0l-7.9-4.44A.993.993 0 013 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.09.34-.14.53-.14s.37.05.53.14l7.9 4.44c.32.17.53.5.53.88v9z" />
+            </svg>
           </div>
           <span class="tool-tag" style="color: var(--accent-gemini);">OSS / BACKUP</span>
           <h3>Gemini CLI</h3>
-          <p>Lớp bảo mật và dự phòng. Sử dụng khi hết quota Claude hoặc cần xử lý batch nhiều repo cùng lúc miễn phí.</p>
-          <div class="tool-tag" style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block;">1,000 req/ngày · Free</div>
+          <p>Lớp bảo mật và dự phòng. Sử dụng khi hết quota Claude hoặc cần xử lý batch nhiều repo cùng lúc miễn phí.
+          </p>
+          <div class="tool-tag"
+            style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block;">
+            1,000 req/ngày · Free</div>
         </div>
       </div>
     </div>
@@ -408,11 +1077,14 @@
           <div class="acc-header">
             <div class="acc-num">1</div>
             <span class="acc-title">Cài đặt Antigravity IDE</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body" style="max-height: 500px;">
             <div class="acc-content">
-              <p>Antigravity là IDE chính chủ từ Google, hỗ trợ sâu cho Gemini và MCP. Khuyên dùng Homebrew để dễ dàng cập nhật.</p>
+              <p>Antigravity là IDE chính chủ từ Google, hỗ trợ sâu cho Gemini và MCP. Khuyên dùng Homebrew để dễ dàng
+                cập nhật.</p>
               <div class="code-block">
                 <code>brew install --cask antigravity</code>
                 <button class="copy-btn" onclick="copyCode(this, 'brew install --cask antigravity')">Copy</button>
@@ -425,14 +1097,17 @@
           <div class="acc-header">
             <div class="acc-num">2</div>
             <span class="acc-title">Cài đặt Claude Code CLI</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
               <p>Native installer của Anthropic giúp cài đặt mà không cần quản lý version Node.js thủ công.</p>
               <div class="code-block">
                 <code>curl -fsSL https://claude.ai/install.sh | bash</code>
-                <button class="copy-btn" onclick="copyCode(this, 'curl -fsSL https://claude.ai/install.sh | bash')">Copy</button>
+                <button class="copy-btn"
+                  onclick="copyCode(this, 'curl -fsSL https://claude.ai/install.sh | bash')">Copy</button>
               </div>
             </div>
           </div>
@@ -442,14 +1117,17 @@
           <div class="acc-header">
             <div class="acc-num">3</div>
             <span class="acc-title">Cài đặt Gemini CLI (Fix NPM)</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
               <p>Đảm bảo NPM của bạn có quyền ghi vào global folder để cài Gemini CLI mà không cần dùng sudo.</p>
               <div class="code-block">
                 <code>mkdir -p ~/.npm-global && npm config set prefix '~/.npm-global' && npm install -g @google/gemini-cli</code>
-                <button class="copy-btn" onclick="copyCode(this, 'mkdir -p ~/.npm-global && npm config set prefix \'~/.npm-global\' && npm install -g @google/gemini-cli')">Copy</button>
+                <button class="copy-btn"
+                  onclick="copyCode(this, 'mkdir -p ~/.npm-global && npm config set prefix \'~/.npm-global\' && npm install -g @google/gemini-cli')">Copy</button>
               </div>
             </div>
           </div>
@@ -459,14 +1137,17 @@
           <div class="acc-header">
             <div class="acc-num">4</div>
             <span class="acc-title">Cấu hình Alias cho Zsh</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
               <p>Thêm các shortcut để chuyển đổi nhanh model và công cụ trong quá trình làm việc.</p>
               <div class="code-block">
                 <code>echo "alias cc='claude'\nalias gm='gemini'\nalias cco='claude --model opus'" >> ~/.zshrc && source ~/.zshrc</code>
-                <button class="copy-btn" onclick="copyCode(this, 'echo \"alias cc=\'claude\'\\nalias gm=\'gemini\'\\nalias cco=\'claude --model opus\'\" >> ~/.zshrc && source ~/.zshrc')">Copy</button>
+                <button class="copy-btn" onclick="copyCode(this, 'echo \" alias cc=\'claude\'\\nalias
+                  gm=\'gemini\'\\nalias cco=\'claude --model opus\'\">> ~/.zshrc && source ~/.zshrc')">Copy</button>
               </div>
             </div>
           </div>
@@ -526,24 +1207,29 @@
       <div class="callout">
         <div class="callout-icon">💡</div>
         <div class="callout-content">
-          <p>Bắt đầu từ tab <b>“Lần đầu — setup”</b> nếu chưa kết nối repo. Bắt đầu từ tab <b>“Dùng UI Antigravity”</b> nếu muốn cách đơn giản nhất.</p>
+          <p>Bắt đầu từ tab <b>“Lần đầu — setup”</b> nếu chưa kết nối repo. Bắt đầu từ tab <b>“Dùng UI Antigravity”</b>
+            nếu muốn cách đơn giản nhất.</p>
         </div>
       </div>
 
       <!-- Fix nhanh block -->
-      <div style="margin-bottom: 60px; padding: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: #111;">
+      <div
+        style="margin-bottom: 60px; padding: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: #111;">
         <h3 style="margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
           <span style="color: var(--accent-gemini);">⚡</span> Fix nhanh khi terminal Antigravity chưa nhận brew/gh
         </h3>
-        <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 15px;">Có 3 lỗi thường đi cùng nhau: Chưa đăng nhập GitHub, Homebrew chưa có trong PATH, và chưa set upstream branch.</p>
-        
+        <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 15px;">Có 3 lỗi thường đi cùng nhau: Chưa
+          đăng nhập GitHub, Homebrew chưa có trong PATH, và chưa set upstream branch.</p>
+
         <div class="fix-step">
           <h5>Bước 1 — Fix PATH cho Homebrew</h5>
           <div class="code-block" style="margin-bottom: 8px;">
             <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code>
-            <button class="copy-btn" onclick="copyCode(this, 'eval \"$(/opt/homebrew/bin/brew shellenv)\"')">Copy</button>
+            <button class="copy-btn" onclick="copyCode(this, 'eval \" $(/opt/homebrew/bin/brew
+              shellenv)\"')">Copy</button>
           </div>
-          <p style="font-size: 12px; color: var(--text-muted);">Note fallback (vĩnh viễn): <code>echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc && source ~/.zshrc</code></p>
+          <p style="font-size: 12px; color: var(--text-muted);">Note fallback (vĩnh viễn):
+            <code>echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc && source ~/.zshrc</code></p>
         </div>
 
         <div class="fix-step">
@@ -576,19 +1262,23 @@
 
         <!-- Tab 1: Setup -->
         <div id="tab-setup" class="tab-content active">
-          <p style="margin-bottom: 24px;">Dành cho người chưa kết nối repo GitHub. Thực hiện tuần tự các bước để khởi tạo.</p>
+          <p style="margin-bottom: 24px;">Dành cho người chưa kết nối repo GitHub. Thực hiện tuần tự các bước để khởi
+            tạo.</p>
           <div class="accordion">
             <div class="acc-item">
               <div class="acc-header">
                 <div class="acc-num">1</div>
                 <span class="acc-title">Khởi tạo Git Local</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
                   <div class="code-block" style="margin-bottom: 12px;">
                     <code>git init && git add . && git commit -m "feat: initial commit"</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'git init && git add . && git commit -m \"feat: initial commit\"')">Copy</button>
+                    <button class="copy-btn" onclick="copyCode(this, 'git init && git add . && git commit -m \" feat:
+                      initial commit\"')">Copy</button>
                   </div>
                 </div>
               </div>
@@ -597,7 +1287,9 @@
               <div class="acc-header">
                 <div class="acc-num">2</div>
                 <span class="acc-title">Kết nối GitHub (Auth & Create)</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
@@ -608,7 +1300,8 @@
                   </div>
                   <div class="code-block">
                     <code>git remote add origin https://github.com/USER/REPO.git</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'git remote add origin https://github.com/USER/REPO.git')">Copy</button>
+                    <button class="copy-btn"
+                      onclick="copyCode(this, 'git remote add origin https://github.com/USER/REPO.git')">Copy</button>
                   </div>
                 </div>
               </div>
@@ -617,13 +1310,16 @@
               <div class="acc-header">
                 <div class="acc-num">3</div>
                 <span class="acc-title">Push & Set Upstream lần đầu</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
                   <div class="code-block">
                     <code>git branch -M main && git push -u origin main</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'git branch -M main && git push -u origin main')">Copy</button>
+                    <button class="copy-btn"
+                      onclick="copyCode(this, 'git branch -M main && git push -u origin main')">Copy</button>
                   </div>
                 </div>
               </div>
@@ -636,32 +1332,39 @@
           <p style="margin-bottom: 24px;">Quy trình đẩy code hàng ngày (4 bước chuẩn) và kiểm tra trạng thái.</p>
           <div class="code-block" style="margin-bottom: 12px;">
             <code>git status && git add . && git commit -m "docs: update content" && git push</code>
-            <button class="copy-btn" onclick="copyCode(this, 'git status && git add . && git commit -m \"docs: update content\" && git push')">Copy</button>
+            <button class="copy-btn" onclick="copyCode(this, 'git status && git add . && git commit -m \" docs: update
+              content\" && git push')">Copy</button>
           </div>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 32px;">*Sau khi đã set upstream (<code>-u</code>), các lần sau bạn chỉ cần gõ <code>git push</code>.</p>
-          
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 32px;">*Sau khi đã set upstream
+            (<code>-u</code>), các lần sau bạn chỉ cần gõ <code>git push</code>.</p>
+
           <h4 style="margin-bottom: 16px;">Nhóm lệnh kiểm tra Remote & Branch</h4>
           <div class="code-block" style="margin-bottom: 32px;">
             <code>git remote -v && git branch && git branch -vv</code>
-            <button class="copy-btn" onclick="copyCode(this, 'git remote -v && git branch && git branch -vv')">Copy</button>
+            <button class="copy-btn"
+              onclick="copyCode(this, 'git remote -v && git branch && git branch -vv')">Copy</button>
           </div>
 
           <h4 style="margin-bottom: 16px;">Mẹo: Dùng Alias tiết kiệm thời gian</h4>
           <div class="code-block" style="margin-bottom: 32px;">
             <code>alias gpush='git add . && git commit -m "update" && git push'</code>
-            <button class="copy-btn" onclick="copyCode(this, 'alias gpush=\'git add . && git commit -m \"update\" && git push\'')">Copy</button>
+            <button class="copy-btn" onclick="copyCode(this, 'alias gpush=\'git add . && git commit -m \" update\" &&
+              git push\'')">Copy</button>
           </div>
         </div>
 
         <!-- Tab 3: UI -->
         <div id="tab-ui" class="tab-content">
-          <p style="margin-bottom: 24px;">Cách dễ nhất cho người không quen terminal, thao tác 100% bằng chuột trong Antigravity.</p>
+          <p style="margin-bottom: 24px;">Cách dễ nhất cho người không quen terminal, thao tác 100% bằng chuột trong
+            Antigravity.</p>
           <div class="accordion">
             <div class="acc-item">
               <div class="acc-header">
                 <div class="acc-num">1</div>
                 <span class="acc-title">Mở Source Control</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
@@ -673,7 +1376,9 @@
               <div class="acc-header">
                 <div class="acc-num">2</div>
                 <span class="acc-title">Stage file</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
@@ -685,7 +1390,9 @@
               <div class="acc-header">
                 <div class="acc-num">3</div>
                 <span class="acc-title">Nhập Message & Push</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
@@ -698,36 +1405,43 @@
 
         <!-- Tab 4: Claude -->
         <div id="tab-claude" class="tab-content">
-          <p style="margin-bottom: 24px;">Claude Code có thể tự thực hiện toàn bộ flow Git và hỏi xác nhận trước khi push. Cách nhanh nhất khi đang chat.</p>
+          <p style="margin-bottom: 24px;">Claude Code có thể tự thực hiện toàn bộ flow Git và hỏi xác nhận trước khi
+            push. Cách nhanh nhất khi đang chat.</p>
           <div class="callout" style="background: rgba(66, 133, 244, 0.05); border-color: rgba(66, 133, 244, 0.2);">
             <div class="callout-icon">💬</div>
             <div class="callout-content">
-              <p>Thêm câu: <b>"commit và push lên GitHub"</b> vào cuối bất kỳ prompt nào. Claude sẽ tự động viết message mô tả đúng những gì nó vừa sửa.</p>
+              <p>Thêm câu: <b>"commit và push lên GitHub"</b> vào cuối bất kỳ prompt nào. Claude sẽ tự động viết message
+                mô tả đúng những gì nó vừa sửa.</p>
             </div>
           </div>
           <h4 style="margin-bottom: 16px;">Ví dụ Prompt hoàn chỉnh:</h4>
           <div class="code-block" style="padding: 24px;">
-            <code style="color: var(--text);">"Sửa lại màu sắc nút CTA sang màu cam, sau đó commit và push lên GitHub giúp mình."</code>
+            <code
+              style="color: var(--text);">"Sửa lại màu sắc nút CTA sang màu cam, sau đó commit và push lên GitHub giúp mình."</code>
           </div>
-          <p style="margin-top: 16px; font-size: 14px; color: var(--text-muted);">Claude sẽ thực hiện: `git status` → `git add` → `git commit` → `git push` một cách tự động.</p>
+          <p style="margin-top: 16px; font-size: 14px; color: var(--text-muted);">Claude sẽ thực hiện: `git status` →
+            `git add` → `git commit` → `git push` một cách tự động.</p>
         </div>
 
         <!-- Tab 5: Fix -->
         <div id="tab-fix" class="tab-content">
           <p style="margin-bottom: 24px;">Các lỗi hay gặp nhất khi làm việc với GitHub và lệnh fix nhanh.</p>
-          
+
           <div class="accordion">
             <div class="acc-item">
               <div class="acc-header">
                 <span class="acc-title">1. Lỗi: remote origin already exists</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
                   <p>Xảy ra khi dự án đã kết nối với một repo cũ. Hãy xóa đi để kết nối repo mới.</p>
                   <div class="code-block">
                     <code>git remote remove origin && git remote add origin <repo-url></code>
-                    <button class="copy-btn" onclick="copyCode(this, 'git remote remove origin && git remote add origin <repo-url>')">Copy</button>
+                    <button class="copy-btn"
+                      onclick="copyCode(this, 'git remote remove origin && git remote add origin <repo-url>')">Copy</button>
                   </div>
                 </div>
               </div>
@@ -735,14 +1449,17 @@
             <div class="acc-item">
               <div class="acc-header">
                 <span class="acc-title">2. Lỗi: rejected (fetch first)</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
                   <p>Xảy ra khi code trên GitHub mới hơn máy local. Hãy pull và rebase về trước.</p>
                   <div class="code-block">
                     <code>git pull origin main --rebase && git push</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'git pull origin main --rebase && git push')">Copy</button>
+                    <button class="copy-btn"
+                      onclick="copyCode(this, 'git pull origin main --rebase && git push')">Copy</button>
                   </div>
                 </div>
               </div>
@@ -750,14 +1467,17 @@
             <div class="acc-item">
               <div class="acc-header">
                 <span class="acc-title">3. Lỗi: src refspec main does not match any</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
                   <p>Thường do chưa có commit nào hoặc sai tên branch. Hãy commit trước khi push.</p>
                   <div class="code-block">
                     <code>git add . && git commit -m "feat: initial commit" && git branch -M main && git push -u origin main</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'git add . && git commit -m \"feat: initial commit\" && git branch -M main && git push -u origin main')">Copy</button>
+                    <button class="copy-btn" onclick="copyCode(this, 'git add . && git commit -m \" feat: initial
+                      commit\" && git branch -M main && git push -u origin main')">Copy</button>
                   </div>
                 </div>
               </div>
@@ -765,14 +1485,17 @@
             <div class="acc-item">
               <div class="acc-header">
                 <span class="acc-title">4. Lỗi: no upstream branch</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
                   <p>Chưa thiết lập branch mặc định trên remote để push. Dùng <code>--set-upstream</code>.</p>
                   <div class="code-block">
                     <code>git push --set-upstream origin main</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'git push --set-upstream origin main')">Copy</button>
+                    <button class="copy-btn"
+                      onclick="copyCode(this, 'git push --set-upstream origin main')">Copy</button>
                   </div>
                 </div>
               </div>
@@ -783,12 +1506,14 @@
         <!-- Tab 6: Deploy -->
         <div id="tab-deploy" class="tab-content">
           <p style="margin-bottom: 24px;">Các lựa chọn đưa dự án của bạn lên internet hoàn toàn miễn phí.</p>
-          
+
           <div class="tips-grid" style="margin-top: 0; grid-template-columns: repeat(2, 1fr);">
             <div class="tip-card" style="border-left: 4px solid #000;">
               <h4>Vercel / Netlify</h4>
-              <p>Phù hợp nhất cho React, HTML tĩnh. Chỉ cần kết nối GitHub, mỗi khi bạn <code>git push</code>, web sẽ tự động cập nhật.</p>
-              <a href="https://vercel.com/new" target="_blank" style="font-size: 12px; color: var(--accent-anthropic); text-decoration: none;">Setup Vercel ↗</a>
+              <p>Phù hợp nhất cho React, HTML tĩnh. Chỉ cần kết nối GitHub, mỗi khi bạn <code>git push</code>, web sẽ tự
+                động cập nhật.</p>
+              <a href="https://vercel.com/new" target="_blank"
+                style="font-size: 12px; color: var(--accent-anthropic); text-decoration: none;">Setup Vercel ↗</a>
             </div>
             <div class="tip-card" style="border-left: 4px solid var(--accent-google);">
               <h4>GitHub Pages</h4>
@@ -796,11 +1521,13 @@
             </div>
           </div>
 
-          <div class="callout" style="margin-top: 32px; background: rgba(52, 168, 83, 0.05); border-color: rgba(52, 168, 83, 0.2);">
+          <div class="callout"
+            style="margin-top: 32px; background: rgba(52, 168, 83, 0.05); border-color: rgba(52, 168, 83, 0.2);">
             <div class="callout-icon">✅</div>
             <div class="callout-content">
               <p>Nếu terminal báo: <b>Everything up-to-date</b></p>
-              <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">Nghĩa là: Repo đã kết nối đúng, branch đã track đúng và hiện tại không có thay đổi nào mới để push.</p>
+              <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">Nghĩa là: Repo đã kết nối đúng,
+                branch đã track đúng và hiện tại không có thay đổi nào mới để push.</p>
             </div>
           </div>
         </div>
@@ -884,10 +1611,11 @@
         <div class="tool-card" style="--card-color: #34A853; --card-color-alpha: rgba(52, 168, 83, 0.1);">
           <h3>Nano Banana 2</h3>
           <p>Model: Gemini 3.1 Flash. Cân bằng hoàn hảo giữa tốc độ và chất lượng.</p>
-          <span class="badge-m1" style="background: rgba(52, 168, 83, 0.2); color: #34A853; border: 1px solid #34A853;">Recommended</span>
+          <span class="badge-m1"
+            style="background: rgba(52, 168, 83, 0.2); color: #34A853; border: 1px solid #34A853;">Recommended</span>
         </div>
       </div>
-      
+
       <div class="section-header" style="margin-top: 60px; margin-bottom: 30px;">
         <h3>Prompt mẫu cho Developer</h3>
       </div>
@@ -895,13 +1623,16 @@
         <div class="acc-item">
           <div class="acc-header">
             <span class="acc-title">1. Hero image cho landing page developer</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
               <div class="code-block">
                 <code>Dark tech background, minimal design. MacBook Pro M1 floating in center with terminal window open showing code. Orange glow accent #E8673A. Background: deep dark #0D0D0D with subtle grid pattern. No text. Cinematic lighting, 16:9 ratio.</code>
-                <button class="copy-btn" onclick="copyCode(this, 'Dark tech background, minimal design. MacBook Pro M1 floating in center with terminal window open showing code. Orange glow accent #E8673A. Background: deep dark #0D0D0D with subtle grid pattern. No text. Cinematic lighting, 16:9 ratio.')">Copy</button>
+                <button class="copy-btn"
+                  onclick="copyCode(this, 'Dark tech background, minimal design. MacBook Pro M1 floating in center with terminal window open showing code. Orange glow accent #E8673A. Background: deep dark #0D0D0D with subtle grid pattern. No text. Cinematic lighting, 16:9 ratio.')">Copy</button>
               </div>
             </div>
           </div>
@@ -909,13 +1640,16 @@
         <div class="acc-item">
           <div class="acc-header">
             <span class="acc-title">2. 3 tool icons: Antigravity / Claude Code / Gemini CLI</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
               <div class="code-block">
                 <code>Set of 3 isometric app icons. 1: Blue futuristic spaceship (Antigravity). 2: Orange terminal cursor (Claude Code). 3: Green star sparkle (Gemini CLI). Clean glassmorphism style, matte finish, dark background, 3D render, high resolution.</code>
-                <button class="copy-btn" onclick="copyCode(this, 'Set of 3 isometric app icons. 1: Blue futuristic spaceship (Antigravity). 2: Orange terminal cursor (Claude Code). 3: Green star sparkle (Gemini CLI). Clean glassmorphism style, matte finish, dark background, 3D render, high resolution.')">Copy</button>
+                <button class="copy-btn"
+                  onclick="copyCode(this, 'Set of 3 isometric app icons. 1: Blue futuristic spaceship (Antigravity). 2: Orange terminal cursor (Claude Code). 3: Green star sparkle (Gemini CLI). Clean glassmorphism style, matte finish, dark background, 3D render, high resolution.')">Copy</button>
               </div>
             </div>
           </div>
@@ -923,13 +1657,16 @@
         <div class="acc-item">
           <div class="acc-header">
             <span class="acc-title">3. Thumbnail YouTube tiếng Việt</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
               <div class="code-block">
                 <code>YouTube thumbnail background. High contrast, neon colors. A Vietnamese developer working on a Mac M1, looking amazed at the screen. Floating glowing text placeholders. Depth of field, bokeh background of a modern workspace. 1280x720.</code>
-                <button class="copy-btn" onclick="copyCode(this, 'YouTube thumbnail background. High contrast, neon colors. A Vietnamese developer working on a Mac M1, looking amazed at the screen. Floating glowing text placeholders. Depth of field, bokeh background of a modern workspace. 1280x720.')">Copy</button>
+                <button class="copy-btn"
+                  onclick="copyCode(this, 'YouTube thumbnail background. High contrast, neon colors. A Vietnamese developer working on a Mac M1, looking amazed at the screen. Floating glowing text placeholders. Depth of field, bokeh background of a modern workspace. 1280x720.')">Copy</button>
               </div>
             </div>
           </div>
@@ -1016,11 +1753,15 @@
           <div class="acc-header">
             <div class="acc-num">?</div>
             <span class="acc-title">Tôi có cần mua Claude Pro không?</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
-              <p>Nếu bạn là developer chuyên nghiệp, Claude Pro ($20) rất xứng đáng vì Claude Code (Sonnet 3.5) hiện là công cụ implement tốt nhất. Tuy nhiên, bạn vẫn có thể dùng Gemini CLI và Antigravity hoàn toàn miễn phí cho hầu hết các tác vụ khác.</p>
+              <p>Nếu bạn là developer chuyên nghiệp, Claude Pro ($20) rất xứng đáng vì Claude Code (Sonnet 3.5) hiện là
+                công cụ implement tốt nhất. Tuy nhiên, bạn vẫn có thể dùng Gemini CLI và Antigravity hoàn toàn miễn phí
+                cho hầu hết các tác vụ khác.</p>
             </div>
           </div>
         </div>
@@ -1028,11 +1769,15 @@
           <div class="acc-header">
             <div class="acc-num">?</div>
             <span class="acc-title">Nano Banana 2 thay thế Midjourney được không?</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
-              <p>Với các task của developer như tạo mockup, icon, hero image đơn giản thì Nano Banana 2 làm rất tốt và nhanh. Với các tác phẩm nghệ thuật phức tạp hoặc cần retouch sâu, Midjourney vẫn nhỉnh hơn về độ chi tiết.</p>
+              <p>Với các task của developer như tạo mockup, icon, hero image đơn giản thì Nano Banana 2 làm rất tốt và
+                nhanh. Với các tác phẩm nghệ thuật phức tạp hoặc cần retouch sâu, Midjourney vẫn nhỉnh hơn về độ chi
+                tiết.</p>
             </div>
           </div>
         </div>
@@ -1040,11 +1785,15 @@
           <div class="acc-header">
             <div class="acc-num">?</div>
             <span class="acc-title">Gemini CLI vs Claude Code — dùng cái nào?</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
-              <p>Dùng <b>Claude Code</b> khi bạn cần AI trực tiếp viết code và sửa file trong repo. Dùng <b>Gemini CLI</b> khi bạn cần search thông tin nhanh (<code>@web</code>), tóm tắt tài liệu lớn (nhờ context 1M) hoặc khi Claude hết quota.</p>
+              <p>Dùng <b>Claude Code</b> khi bạn cần AI trực tiếp viết code và sửa file trong repo. Dùng <b>Gemini
+                  CLI</b> khi bạn cần search thông tin nhanh (<code>@web</code>), tóm tắt tài liệu lớn (nhờ context 1M)
+                hoặc khi Claude hết quota.</p>
             </div>
           </div>
         </div>
@@ -1052,11 +1801,15 @@
           <div class="acc-header">
             <div class="acc-num">?</div>
             <span class="acc-title">Khi nào nên dùng /compact?</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
-              <p>Trong Claude Code, hãy dùng <code>/compact</code> khi session chat đã quá dài (khoảng 30-40 lượt chat). Lệnh này giúp tóm tắt context, giải phóng token và giúp AI tập trung vào các yêu cầu mới chính xác hơn.</p>
+              <p>Trong Claude Code, hãy dùng <code>/compact</code> khi session chat đã quá dài (khoảng 30-40 lượt chat).
+                Lệnh này giúp tóm tắt context, giải phóng token và giúp AI tập trung vào các yêu cầu mới chính xác hơn.
+              </p>
             </div>
           </div>
         </div>
@@ -1064,11 +1817,15 @@
           <div class="acc-header">
             <div class="acc-num">?</div>
             <span class="acc-title">Làm sao biết còn bao nhiêu quota?</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
-              <p>Với Claude, bạn có thể check trong settings của claude.ai. Với Gemini CLI, lệnh <code>gm stats</code> sẽ hiển thị số lượng request đã dùng trong ngày. Antigravity thường không giới hạn quota cho các model miễn phí.</p>
+              <p>Với Claude, bạn có thể check trong settings của claude.ai. Với Gemini CLI, lệnh <code>gm stats</code>
+                sẽ hiển thị số lượng request đã dùng trong ngày. Antigravity thường không giới hạn quota cho các model
+                miễn phí.</p>
             </div>
           </div>
         </div>
@@ -1076,11 +1833,15 @@
           <div class="acc-header">
             <div class="acc-num">?</div>
             <span class="acc-title">Kimi K2 và OpenRouter khác nhau chỗ nào?</span>
-            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </div>
           <div class="acc-body">
             <div class="acc-content">
-              <p>Kimi K2 là model riêng biệt nổi tiếng với context window lớn và khả năng xử lý file excel/pdf tốt. OpenRouter là một bridge API giúp bạn truy cập hàng trăm model khác nhau (bao gồm cả Kimi, Claude, GPT) thông qua một cổng thanh toán duy nhất.</p>
+              <p>Kimi K2 là model riêng biệt nổi tiếng với context window lớn và khả năng xử lý file excel/pdf tốt.
+                OpenRouter là một bridge API giúp bạn truy cập hàng trăm model khác nhau (bao gồm cả Kimi, Claude, GPT)
+                thông qua một cổng thanh toán duy nhất.</p>
             </div>
           </div>
         </div>
@@ -1098,15 +1859,18 @@
       <div class="tips-grid">
         <div class="tip-card">
           <h4>/compact thường xuyên</h4>
-          <p>Dùng lệnh <code>/compact</code> trong Claude Code sau mỗi 30-40 turns để tóm tắt context, giúp tiết kiệm token và giảm lag.</p>
+          <p>Dùng lệnh <code>/compact</code> trong Claude Code sau mỗi 30-40 turns để tóm tắt context, giúp tiết kiệm
+            token và giảm lag.</p>
         </div>
         <div class="tip-card">
           <h4>File CLAUDE.md</h4>
-          <p>Luôn giữ file <code>CLAUDE.md</code> ở root project. Đây là "bản đồ" để Claude hiểu architecture mà không cần đọc lại toàn bộ file.</p>
+          <p>Luôn giữ file <code>CLAUDE.md</code> ở root project. Đây là "bản đồ" để Claude hiểu architecture mà không
+            cần đọc lại toàn bộ file.</p>
         </div>
         <div class="tip-card">
           <h4>Git thường xuyên</h4>
-          <p>Hãy commit mỗi khi một tính năng nhỏ hoạt động. Điều này giúp bạn dễ dàng rollback nếu AI "đi quá xa" so với ý muốn.</p>
+          <p>Hãy commit mỗi khi một tính năng nhỏ hoạt động. Điều này giúp bạn dễ dàng rollback nếu AI "đi quá xa" so
+            với ý muốn.</p>
         </div>
       </div>
     </div>
@@ -1116,7 +1880,8 @@
   <section id="cta">
     <div class="container">
       <h2 style="font-size: 3rem; margin-bottom: 24px;">Sẵn sàng bứt phá tốc độ code?</h2>
-      <p class="subtext" style="margin: 0 auto 40px;">Bắt đầu cài đặt ngay hôm nay và trải nghiệm sức mạnh của AI Agent thực thụ.</p>
+      <p class="subtext" style="margin: 0 auto 40px;">Bắt đầu cài đặt ngay hôm nay và trải nghiệm sức mạnh của AI Agent
+        thực thụ.</p>
       <a href="#setup" class="btn btn-primary" style="padding: 18px 48px; font-size: 18px;">Bắt đầu ngay</a>
     </div>
   </section>
@@ -1127,10 +1892,13 @@
       <div class="footer-content">
         <div class="footer-brand">
           <div class="logo">
-            <svg class="icon-svg" viewBox="0 0 24 24" style="color:var(--accent-anthropic)"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+            <svg class="icon-svg" viewBox="0 0 24 24" style="color:var(--accent-anthropic)">
+              <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z" />
+            </svg>
             Claude <span>Code</span>
           </div>
-          <p>Tổng hợp từ thực tế cài đặt và sử dụng hàng ngày của cộng đồng developer Việt Nam. Cập nhật tháng 3/2026.</p>
+          <p>Tổng hợp từ thực tế cài đặt và sử dụng hàng ngày của cộng đồng developer Việt Nam. Cập nhật tháng 3/2026.
+          </p>
         </div>
         <div class="footer-links-group">
           <div class="footer-col">
@@ -1199,7 +1967,7 @@
         const item = header.parentElement;
         const isActive = item.classList.contains('active');
         const container = item.closest('.accordion');
-        
+
         // Close other items in the SAME container
         container.querySelectorAll('.acc-item').forEach(i => {
           i.classList.remove('active');
@@ -1246,7 +2014,7 @@
           line.style.marginBottom = "4px";
           if (item.c) line.style.color = item.c;
           el.appendChild(line);
-          
+
           for (let i = 0; i < item.t.length; i++) {
             line.textContent += item.t[i];
             await new Promise(r => setTimeout(r, 40));
@@ -1270,4 +2038,5 @@
     document.querySelectorAll('section').forEach(section => observer.observe(section));
   </script>
 </body>
+
 </html>
