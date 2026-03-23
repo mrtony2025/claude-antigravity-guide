@@ -188,6 +188,33 @@
     .tm-title { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
     .tm-desc { font-size: 13px; color: var(--text-muted); padding: 0 10px; }
 
+    /* ===== TABS COMPONENT ===== */
+    .tabs-container { margin-top: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+    .tab-headers { display: flex; background: #1A1A1A; border-bottom: 1px solid var(--border); overflow-x: auto; }
+    .tab-header {
+      padding: 16px 24px; cursor: pointer; font-weight: 600; font-size: 14px;
+      color: var(--text-muted); transition: var(--transition); white-space: nowrap;
+      border-right: 1px solid var(--border);
+    }
+    .tab-header:hover { color: var(--text); background: #222; }
+    .tab-header.active { color: var(--accent-anthropic); background: var(--surface); position: relative; }
+    .tab-header.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent-anthropic); }
+    .tab-content { padding: 32px; display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== CALLOUT ===== */
+    .callout {
+      background: rgba(232, 103, 58, 0.05); border: 1px solid rgba(232, 103, 58, 0.2);
+      border-radius: var(--radius); padding: 24px; margin-bottom: 32px; display: flex; gap: 16px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 24px; line-height: 1; }
+    .callout-content p { font-size: 15px; color: var(--text); margin: 0; }
+    .callout-content b { color: var(--accent-anthropic); }
+
+    .fix-step { margin-bottom: 24px; }
+    .fix-step h5 { color: var(--accent-gemini); margin-bottom: 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+
     /* ===== MODELS TABLE ===== */
     .table-container { overflow-x: auto; margin-top: 40px; border: 1px solid var(--border); border-radius: var(--radius); }
     table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
@@ -253,6 +280,7 @@
   <div class="mobile-overlay" id="mobileOverlay">
     <a href="#setup" onclick="toggleMenu()">Cài đặt</a>
     <a href="#workflow" onclick="toggleMenu()">Workflow</a>
+    <a href="#github" onclick="toggleMenu()">GitHub</a>
     <a href="#models" onclick="toggleMenu()">Models</a>
     <a href="#tips" onclick="toggleMenu()">Tips</a>
   </div>
@@ -270,6 +298,7 @@
       <div class="nav-links">
         <a href="#setup">Cài đặt</a>
         <a href="#workflow">Workflow</a>
+        <a href="#github">GitHub</a>
         <a href="#models">Models</a>
         <a href="#tips">Tips</a>
         <a href="https://docs.anthropic.com/claude-code" target="_blank" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Tài liệu ↗</a>
@@ -480,6 +509,287 @@
           <div class="tm-dot" style="color: #34A853;">🌐</div>
           <div class="tm-title">5. Gemini CLI</div>
           <div class="tm-desc">Dùng lệnh <code>@web</code> để verify thông tin, search docs và kiểm tra lỗi.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GITHUB WORKFLOW -->
+  <section id="github" style="background: #0D0D0D;">
+    <div class="container">
+      <div class="section-header">
+        <h2>Quản lý GitHub & Deploy</h2>
+        <p>Quy trình đẩy code từ máy local lên repository và xử lý lỗi phát sinh.</p>
+      </div>
+
+      <!-- Intro Callout -->
+      <div class="callout">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <p>Bắt đầu từ tab <b>“Lần đầu — setup”</b> nếu chưa kết nối repo. Bắt đầu từ tab <b>“Dùng UI Antigravity”</b> nếu muốn cách đơn giản nhất.</p>
+        </div>
+      </div>
+
+      <!-- Fix nhanh block -->
+      <div style="margin-bottom: 60px; padding: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: #111;">
+        <h3 style="margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+          <span style="color: var(--accent-gemini);">⚡</span> Fix nhanh khi terminal Antigravity chưa nhận brew/gh
+        </h3>
+        <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 15px;">Có 3 lỗi thường đi cùng nhau: Chưa đăng nhập GitHub, Homebrew chưa có trong PATH, và chưa set upstream branch.</p>
+        
+        <div class="fix-step">
+          <h5>Bước 1 — Fix PATH cho Homebrew trước</h5>
+          <div class="code-block">
+            <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code>
+            <button class="copy-btn" onclick="copyCode(this, 'eval \"$(/opt/homebrew/bin/brew shellenv)\"')">Copy</button>
+          </div>
+        </div>
+
+        <div class="fix-step">
+          <h5>Bước 2 — Đăng nhập GitHub CLI</h5>
+          <div class="code-block">
+            <code>gh auth login</code>
+            <button class="copy-btn" onclick="copyCode(this, 'gh auth login')">Copy</button>
+          </div>
+        </div>
+
+        <div class="fix-step" style="margin-bottom: 0;">
+          <h5>Bước 3 — Set Upstream và Push</h5>
+          <div class="code-block">
+            <code>git push -u origin main</code>
+            <button class="copy-btn" onclick="copyCode(this, 'git push -u origin main')">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5-Tab System -->
+      <div class="tabs-container">
+        <div class="tab-headers">
+          <div class="tab-header active" onclick="openTab(event, 'tab-setup')">Lần đầu — setup</div>
+          <div class="tab-header" onclick="openTab(event, 'tab-daily')">Push hàng ngày</div>
+          <div class="tab-header" onclick="openTab(event, 'tab-ui')">Dùng UI Antigravity</div>
+          <div class="tab-header" onclick="openTab(event, 'tab-claude')">Nhờ Claude Code push</div>
+          <div class="tab-header" onclick="openTab(event, 'tab-fix')">Fix lỗi thường gặp</div>
+        </div>
+
+        <!-- Tab 1: Setup -->
+        <div id="tab-setup" class="tab-content active">
+          <p style="margin-bottom: 24px;">Dành cho người chưa kết nối repo GitHub. Thực hiện tuần tự 3 bước để khởi tạo.</p>
+          <div class="accordion">
+            <div class="acc-item">
+              <div class="acc-header">
+                <div class="acc-num">1</div>
+                <span class="acc-title">Tạo Repo & Kết nối</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <div class="code-block" style="margin-bottom: 12px;">
+                    <code>git init && git add . && git commit -m "initial commit"</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'git init && git add . && git commit -m \"initial commit\"')">Copy</button>
+                  </div>
+                  <div class="code-block">
+                    <code>git remote add origin https://github.com/USER/REPO.git</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'git remote add origin https://github.com/USER/REPO.git')">Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header">
+                <div class="acc-num">2</div>
+                <span class="acc-title">Cài đặt GitHub CLI (Khuyên dùng)</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <p>Sử dụng <code>gh</code> để xác thực một lần duy nhất, tránh việc terminal hỏi password mỗi lần push.</p>
+                  <div class="code-block">
+                    <code>brew install gh && gh auth login</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'brew install gh && gh auth login')">Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header">
+                <div class="acc-num">3</div>
+                <span class="acc-title">Push lần đầu tiên</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <div class="code-block">
+                    <code>git branch -M main && git push -u origin main</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'git branch -M main && git push -u origin main')">Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Daily -->
+        <div id="tab-daily" class="tab-content">
+          <p style="margin-bottom: 24px;">Quy trình đẩy code hàng ngày sau khi đã hoàn thành một tính năng.</p>
+          <div class="code-block" style="margin-bottom: 32px;">
+            <code>git status && git add . && git commit -m "feat: nội dung" && git push</code>
+            <button class="copy-btn" onclick="copyCode(this, 'git status && git add . && git commit -m \"feat: update content\" && git push')">Copy</button>
+          </div>
+          
+          <h4 style="margin-bottom: 16px;">Mẹo: Dùng Alias tiết kiệm thời gian</h4>
+          <div class="code-block" style="margin-bottom: 32px;">
+            <code>alias gpush='git add . && git commit -m "update" && git push'</code>
+            <button class="copy-btn" onclick="copyCode(this, 'alias gpush=\'git add . && git commit -m \"update\" && git push\'')">Copy</button>
+          </div>
+
+          <h4 style="margin-bottom: 16px;">Conventional Commits mẫu</h4>
+          <div class="table-container" style="margin-top: 0;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Prefix</th>
+                  <th>Ý nghĩa</th>
+                  <th>Ví dụ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="alias">feat:</span></td><td>Thêm tính năng mới</td><td>feat: thêm trang login</td></tr>
+                <tr><td><span class="alias">fix:</span></td><td>Sửa lỗi bug</td><td>fix: sửa lỗi layout mobile</td></tr>
+                <tr><td><span class="alias">docs:</span></td><td>Cập nhật tài liệu</td><td>docs: thêm hướng dẫn git</td></tr>
+                <tr><td><span class="alias">style:</span></td><td>Format UI/CSS nhẹ</td><td>style: chỉnh lề button</td></tr>
+                <tr><td><span class="alias">refactor:</span></td><td>Tối ưu code</td><td>refactor: gom nhóm function</td></tr>
+                <tr><td><span class="alias">chore:</span></td><td>Việc vặt hệ thống</td><td>chore: cập nhật gitignore</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 3: UI -->
+        <div id="tab-ui" class="tab-content">
+          <p style="margin-bottom: 24px;">Cách dễ nhất cho người không quen terminal, thao tác 100% bằng chuột trong Antigravity.</p>
+          <div class="accordion">
+            <div class="acc-item">
+              <div class="acc-header">
+                <div class="acc-num">1</div>
+                <span class="acc-title">Mở Source Control</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <p>Click vào icon Source Control (hình nhánh cây) ở sidebar bên trái của Antigravity IDE.</p>
+                </div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header">
+                <div class="acc-num">2</div>
+                <span class="acc-title">Stage file</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <p>Ấn dấu <b>(+)</b> cạnh các file thay đổi để đưa vào trạng thái Stage (sẵn sàng commit).</p>
+                </div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header">
+                <div class="acc-num">3</div>
+                <span class="acc-title">Nhập Message & Push</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <p>Nhập nội dung thay đổi vào ô "Message", sau đó chọn <b>“Commit & Push”</b>.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Claude -->
+        <div id="tab-claude" class="tab-content">
+          <p style="margin-bottom: 24px;">Claude Code có thể tự thực hiện toàn bộ flow Git và hỏi xác nhận trước khi push. Cách nhanh nhất khi đang chat.</p>
+          <div class="callout" style="background: rgba(66, 133, 244, 0.05); border-color: rgba(66, 133, 244, 0.2);">
+            <div class="callout-icon">💬</div>
+            <div class="callout-content">
+              <p>Thêm câu: <b>"commit và push lên GitHub"</b> vào cuối bất kỳ prompt nào. Claude sẽ tự động viết message mô tả đúng những gì nó vừa sửa.</p>
+            </div>
+          </div>
+          <h4 style="margin-bottom: 16px;">Ví dụ Prompt hoàn chỉnh:</h4>
+          <div class="code-block" style="padding: 24px;">
+            <code style="color: var(--text);">"Sửa lại màu sắc nút CTA sang màu cam, sau đó commit và push lên GitHub giúp mình."</code>
+          </div>
+          <p style="margin-top: 16px; font-size: 14px; color: var(--text-muted);">Claude sẽ thực hiện: `git status` → `git add` → `git commit` → `git push` một cách tự động.</p>
+        </div>
+
+        <!-- Tab 5: Fix -->
+        <div id="tab-fix" class="tab-content">
+          <p style="margin-bottom: 24px;">4 lỗi hay gặp nhất khi làm việc với GitHub và lệnh fix nhanh.</p>
+          
+          <div class="accordion">
+            <div class="acc-item">
+              <div class="acc-header">
+                <span class="acc-title">1. Lỗi: remote origin already exists</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <p>Xảy ra khi dự án đã kết nối với một repo cũ. Hãy xóa đi để kết nối repo mới.</p>
+                  <div class="code-block">
+                    <code>git remote remove origin && git remote add origin URL_MOI</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'git remote remove origin && git remote add origin ...')">Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header">
+                <span class="acc-title">2. Lỗi: rejected (fetch first)</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <p>Xảy ra khi code trên GitHub mới hơn máy local. Hãy pull về trước.</p>
+                  <div class="code-block">
+                    <code>git pull --rebase origin main && git push origin main</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'git pull --rebase origin main && git push origin main')">Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header">
+                <span class="acc-title">3. Lỗi: authentication failed</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <p>Chưa đăng nhập GitHub hoặc token hết hạn. Dùng lệnh login lại.</p>
+                  <div class="code-block">
+                    <code>gh auth login</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'gh auth login')">Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header">
+                <span class="acc-title">4. Lỗi: src refspec main does not match any</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <p>Thường do chưa có commit nào hoặc sai tên branch. Hãy commit trước khi push.</p>
+                  <div class="code-block">
+                    <code>git add . && git commit -m "initial commit" && git push -u origin main</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'git add . && git commit -m \"initial commit\" && git push -u origin main')">Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -842,6 +1152,15 @@
   </footer>
 
   <script>
+    // ===== TABS LOGIC =====
+    function openTab(event, tabId) {
+      const container = event.currentTarget.closest('.tabs-container');
+      container.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      container.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active'));
+      container.querySelector(`#${tabId}`).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
     // ===== NAVBAR SCROLL BEHAVIOR =====
     let lastScrollTop = 0;
     const navbar = document.getElementById('navbar');
