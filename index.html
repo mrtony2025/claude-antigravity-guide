@@ -538,31 +538,32 @@
         <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 15px;">Có 3 lỗi thường đi cùng nhau: Chưa đăng nhập GitHub, Homebrew chưa có trong PATH, và chưa set upstream branch.</p>
         
         <div class="fix-step">
-          <h5>Bước 1 — Fix PATH cho Homebrew trước</h5>
-          <div class="code-block">
+          <h5>Bước 1 — Fix PATH cho Homebrew</h5>
+          <div class="code-block" style="margin-bottom: 8px;">
             <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code>
             <button class="copy-btn" onclick="copyCode(this, 'eval \"$(/opt/homebrew/bin/brew shellenv)\"')">Copy</button>
           </div>
+          <p style="font-size: 12px; color: var(--text-muted);">Note fallback (vĩnh viễn): <code>echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc && source ~/.zshrc</code></p>
         </div>
 
         <div class="fix-step">
-          <h5>Bước 2 — Đăng nhập GitHub CLI</h5>
+          <h5>Bước 2 — Cài đặt & Đăng nhập GitHub CLI</h5>
           <div class="code-block">
-            <code>gh auth login</code>
-            <button class="copy-btn" onclick="copyCode(this, 'gh auth login')">Copy</button>
+            <code>brew install gh && gh auth login</code>
+            <button class="copy-btn" onclick="copyCode(this, 'brew install gh && gh auth login')">Copy</button>
           </div>
         </div>
 
         <div class="fix-step" style="margin-bottom: 0;">
           <h5>Bước 3 — Set Upstream và Push</h5>
           <div class="code-block">
-            <code>git push -u origin main</code>
-            <button class="copy-btn" onclick="copyCode(this, 'git push -u origin main')">Copy</button>
+            <code>git push --set-upstream origin main</code>
+            <button class="copy-btn" onclick="copyCode(this, 'git push --set-upstream origin main')">Copy</button>
           </div>
         </div>
       </div>
 
-      <!-- 5-Tab System -->
+      <!-- 6-Tab System -->
       <div class="tabs-container">
         <div class="tab-headers">
           <div class="tab-header active" onclick="openTab(event, 'tab-setup')">Lần đầu — setup</div>
@@ -570,23 +571,40 @@
           <div class="tab-header" onclick="openTab(event, 'tab-ui')">Dùng UI Antigravity</div>
           <div class="tab-header" onclick="openTab(event, 'tab-claude')">Nhờ Claude Code push</div>
           <div class="tab-header" onclick="openTab(event, 'tab-fix')">Fix lỗi thường gặp</div>
+          <div class="tab-header" onclick="openTab(event, 'tab-deploy')">Deploy dự án</div>
         </div>
 
         <!-- Tab 1: Setup -->
         <div id="tab-setup" class="tab-content active">
-          <p style="margin-bottom: 24px;">Dành cho người chưa kết nối repo GitHub. Thực hiện tuần tự 3 bước để khởi tạo.</p>
+          <p style="margin-bottom: 24px;">Dành cho người chưa kết nối repo GitHub. Thực hiện tuần tự các bước để khởi tạo.</p>
           <div class="accordion">
             <div class="acc-item">
               <div class="acc-header">
                 <div class="acc-num">1</div>
-                <span class="acc-title">Tạo Repo & Kết nối</span>
+                <span class="acc-title">Khởi tạo Git Local</span>
                 <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
                   <div class="code-block" style="margin-bottom: 12px;">
-                    <code>git init && git add . && git commit -m "initial commit"</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'git init && git add . && git commit -m \"initial commit\"')">Copy</button>
+                    <code>git init && git add . && git commit -m "feat: initial commit"</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'git init && git add . && git commit -m \"feat: initial commit\"')">Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header">
+                <div class="acc-num">2</div>
+                <span class="acc-title">Kết nối GitHub (Auth & Create)</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <p>Dùng GitHub CLI để tạo repo nhanh hoặc add remote thủ công.</p>
+                  <div class="code-block" style="margin-bottom: 12px;">
+                    <code>gh auth login && gh repo create</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'gh auth login && gh repo create')">Copy</button>
                   </div>
                   <div class="code-block">
                     <code>git remote add origin https://github.com/USER/REPO.git</code>
@@ -597,24 +615,8 @@
             </div>
             <div class="acc-item">
               <div class="acc-header">
-                <div class="acc-num">2</div>
-                <span class="acc-title">Cài đặt GitHub CLI (Khuyên dùng)</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-              </div>
-              <div class="acc-body">
-                <div class="acc-content">
-                  <p>Sử dụng <code>gh</code> để xác thực một lần duy nhất, tránh việc terminal hỏi password mỗi lần push.</p>
-                  <div class="code-block">
-                    <code>brew install gh && gh auth login</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'brew install gh && gh auth login')">Copy</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="acc-item">
-              <div class="acc-header">
                 <div class="acc-num">3</div>
-                <span class="acc-title">Push lần đầu tiên</span>
+                <span class="acc-title">Push & Set Upstream lần đầu</span>
                 <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
               </div>
               <div class="acc-body">
@@ -631,37 +633,23 @@
 
         <!-- Tab 2: Daily -->
         <div id="tab-daily" class="tab-content">
-          <p style="margin-bottom: 24px;">Quy trình đẩy code hàng ngày sau khi đã hoàn thành một tính năng.</p>
-          <div class="code-block" style="margin-bottom: 32px;">
-            <code>git status && git add . && git commit -m "feat: nội dung" && git push</code>
-            <button class="copy-btn" onclick="copyCode(this, 'git status && git add . && git commit -m \"feat: update content\" && git push')">Copy</button>
+          <p style="margin-bottom: 24px;">Quy trình đẩy code hàng ngày (4 bước chuẩn) và kiểm tra trạng thái.</p>
+          <div class="code-block" style="margin-bottom: 12px;">
+            <code>git status && git add . && git commit -m "docs: update content" && git push</code>
+            <button class="copy-btn" onclick="copyCode(this, 'git status && git add . && git commit -m \"docs: update content\" && git push')">Copy</button>
           </div>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 32px;">*Sau khi đã set upstream (<code>-u</code>), các lần sau bạn chỉ cần gõ <code>git push</code>.</p>
           
+          <h4 style="margin-bottom: 16px;">Nhóm lệnh kiểm tra Remote & Branch</h4>
+          <div class="code-block" style="margin-bottom: 32px;">
+            <code>git remote -v && git branch && git branch -vv</code>
+            <button class="copy-btn" onclick="copyCode(this, 'git remote -v && git branch && git branch -vv')">Copy</button>
+          </div>
+
           <h4 style="margin-bottom: 16px;">Mẹo: Dùng Alias tiết kiệm thời gian</h4>
           <div class="code-block" style="margin-bottom: 32px;">
             <code>alias gpush='git add . && git commit -m "update" && git push'</code>
             <button class="copy-btn" onclick="copyCode(this, 'alias gpush=\'git add . && git commit -m \"update\" && git push\'')">Copy</button>
-          </div>
-
-          <h4 style="margin-bottom: 16px;">Conventional Commits mẫu</h4>
-          <div class="table-container" style="margin-top: 0;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Prefix</th>
-                  <th>Ý nghĩa</th>
-                  <th>Ví dụ</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td><span class="alias">feat:</span></td><td>Thêm tính năng mới</td><td>feat: thêm trang login</td></tr>
-                <tr><td><span class="alias">fix:</span></td><td>Sửa lỗi bug</td><td>fix: sửa lỗi layout mobile</td></tr>
-                <tr><td><span class="alias">docs:</span></td><td>Cập nhật tài liệu</td><td>docs: thêm hướng dẫn git</td></tr>
-                <tr><td><span class="alias">style:</span></td><td>Format UI/CSS nhẹ</td><td>style: chỉnh lề button</td></tr>
-                <tr><td><span class="alias">refactor:</span></td><td>Tối ưu code</td><td>refactor: gom nhóm function</td></tr>
-                <tr><td><span class="alias">chore:</span></td><td>Việc vặt hệ thống</td><td>chore: cập nhật gitignore</td></tr>
-              </tbody>
-            </table>
           </div>
         </div>
 
@@ -726,7 +714,7 @@
 
         <!-- Tab 5: Fix -->
         <div id="tab-fix" class="tab-content">
-          <p style="margin-bottom: 24px;">4 lỗi hay gặp nhất khi làm việc với GitHub và lệnh fix nhanh.</p>
+          <p style="margin-bottom: 24px;">Các lỗi hay gặp nhất khi làm việc với GitHub và lệnh fix nhanh.</p>
           
           <div class="accordion">
             <div class="acc-item">
@@ -738,8 +726,8 @@
                 <div class="acc-content">
                   <p>Xảy ra khi dự án đã kết nối với một repo cũ. Hãy xóa đi để kết nối repo mới.</p>
                   <div class="code-block">
-                    <code>git remote remove origin && git remote add origin URL_MOI</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'git remote remove origin && git remote add origin ...')">Copy</button>
+                    <code>git remote remove origin && git remote add origin <repo-url></code>
+                    <button class="copy-btn" onclick="copyCode(this, 'git remote remove origin && git remote add origin <repo-url>')">Copy</button>
                   </div>
                 </div>
               </div>
@@ -751,46 +739,72 @@
               </div>
               <div class="acc-body">
                 <div class="acc-content">
-                  <p>Xảy ra khi code trên GitHub mới hơn máy local. Hãy pull về trước.</p>
+                  <p>Xảy ra khi code trên GitHub mới hơn máy local. Hãy pull và rebase về trước.</p>
                   <div class="code-block">
-                    <code>git pull --rebase origin main && git push origin main</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'git pull --rebase origin main && git push origin main')">Copy</button>
+                    <code>git pull origin main --rebase && git push</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'git pull origin main --rebase && git push')">Copy</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="acc-item">
               <div class="acc-header">
-                <span class="acc-title">3. Lỗi: authentication failed</span>
-                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-              </div>
-              <div class="acc-body">
-                <div class="acc-content">
-                  <p>Chưa đăng nhập GitHub hoặc token hết hạn. Dùng lệnh login lại.</p>
-                  <div class="code-block">
-                    <code>gh auth login</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'gh auth login')">Copy</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="acc-item">
-              <div class="acc-header">
-                <span class="acc-title">4. Lỗi: src refspec main does not match any</span>
+                <span class="acc-title">3. Lỗi: src refspec main does not match any</span>
                 <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
               </div>
               <div class="acc-body">
                 <div class="acc-content">
                   <p>Thường do chưa có commit nào hoặc sai tên branch. Hãy commit trước khi push.</p>
                   <div class="code-block">
-                    <code>git add . && git commit -m "initial commit" && git push -u origin main</code>
-                    <button class="copy-btn" onclick="copyCode(this, 'git add . && git commit -m \"initial commit\" && git push -u origin main')">Copy</button>
+                    <code>git add . && git commit -m "feat: initial commit" && git branch -M main && git push -u origin main</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'git add . && git commit -m \"feat: initial commit\" && git branch -M main && git push -u origin main')">Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-header">
+                <span class="acc-title">4. Lỗi: no upstream branch</span>
+                <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+              <div class="acc-body">
+                <div class="acc-content">
+                  <p>Chưa thiết lập branch mặc định trên remote để push. Dùng <code>--set-upstream</code>.</p>
+                  <div class="code-block">
+                    <code>git push --set-upstream origin main</code>
+                    <button class="copy-btn" onclick="copyCode(this, 'git push --set-upstream origin main')">Copy</button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Tab 6: Deploy -->
+        <div id="tab-deploy" class="tab-content">
+          <p style="margin-bottom: 24px;">Các lựa chọn đưa dự án của bạn lên internet hoàn toàn miễn phí.</p>
+          
+          <div class="tips-grid" style="margin-top: 0; grid-template-columns: repeat(2, 1fr);">
+            <div class="tip-card" style="border-left: 4px solid #000;">
+              <h4>Vercel / Netlify</h4>
+              <p>Phù hợp nhất cho React, HTML tĩnh. Chỉ cần kết nối GitHub, mỗi khi bạn <code>git push</code>, web sẽ tự động cập nhật.</p>
+              <a href="https://vercel.com/new" target="_blank" style="font-size: 12px; color: var(--accent-anthropic); text-decoration: none;">Setup Vercel ↗</a>
+            </div>
+            <div class="tip-card" style="border-left: 4px solid var(--accent-google);">
+              <h4>GitHub Pages</h4>
+              <p>Dành cho các trang HTML tĩnh đơn giản. Bật trong phần <b>Settings > Pages</b> của repository.</p>
+            </div>
+          </div>
+
+          <div class="callout" style="margin-top: 32px; background: rgba(52, 168, 83, 0.05); border-color: rgba(52, 168, 83, 0.2);">
+            <div class="callout-icon">✅</div>
+            <div class="callout-content">
+              <p>Nếu terminal báo: <b>Everything up-to-date</b></p>
+              <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">Nghĩa là: Repo đã kết nối đúng, branch đã track đúng và hiện tại không có thay đổi nào mới để push.</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
