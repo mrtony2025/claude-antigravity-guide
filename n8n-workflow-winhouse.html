@@ -44,6 +44,26 @@
         
         .glow-n8n { box-shadow: 0 0 20px rgba(255, 102, 0, 0.15); }
         .glow-claude { box-shadow: 0 0 20px rgba(217, 119, 87, 0.15); }
+        
+        /* Node connection line */
+        .node-connector {
+            position: relative;
+        }
+        @media (min-width: 1024px) {
+            .node-connector::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                right: -1.5rem;
+                width: 1.5rem;
+                height: 2px;
+                background-color: #334155;
+                z-index: 0;
+            }
+            .node-connector:last-child::after {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-300 font-sans antialiased min-h-screen pb-20">
@@ -204,6 +224,134 @@
                             <p class="text-xs text-slate-400">SOP, Prompt Library, Brand Rules</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2.5: Deep Dive into n8n Workflow -->
+        <section>
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="git-commit" class="text-n8n-500"></i>
+                    Luồng Xử Lý n8n Chi Tiết (18-Node Workflow)
+                </h2>
+            </div>
+            
+            <div class="glass-panel rounded-3xl p-6 lg:p-8 border border-slate-800 overflow-x-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 min-w-[800px]">
+                    
+                    <!-- Giai đoạn 1: Intake -->
+                    <div class="bg-slate-900/50 rounded-2xl p-5 border border-slate-700/60 node-connector">
+                        <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-800">
+                            <div class="p-1.5 bg-blue-500/20 text-blue-400 rounded-md"><i data-lucide="download-cloud" class="w-4 h-4"></i></div>
+                            <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wide">1. Intake & Clean</h3>
+                        </div>
+                        <div class="space-y-2.5 relative z-10">
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">01</span>
+                                <span>Schedule Trigger</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">02</span>
+                                <span>Load Whitelist (Notion/DB)</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">03</span>
+                                <span>Fetch Source Content</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">04</span>
+                                <span>Deduplicate & Fresh Check</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Giai đoạn 2: Intelligence -->
+                    <div class="bg-slate-900/50 rounded-2xl p-5 border border-slate-700/60 node-connector">
+                        <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-800">
+                            <div class="p-1.5 bg-claude-500/20 text-claude-500 rounded-md"><i data-lucide="brain" class="w-4 h-4"></i></div>
+                            <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wide">2. Intelligence</h3>
+                        </div>
+                        <div class="space-y-2.5 relative z-10">
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">05</span>
+                                <span>Geo & Context Filter</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">06</span>
+                                <span>Brand-Fit Score (AI)</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-rose-900/50 hover:border-rose-700 transition">
+                                <span class="font-mono text-xs text-rose-500 bg-rose-950 px-1.5 py-0.5 rounded">07</span>
+                                <span class="text-rose-200">Fact Safety Check</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">08</span>
+                                <span>Angle Generator</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">09</span>
+                                <span>AI Draft Writer</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">10</span>
+                                <span>Compliance Formatter</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Giai đoạn 3: Review -->
+                    <div class="bg-slate-900/50 rounded-2xl p-5 border border-slate-700/60 node-connector">
+                        <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-800">
+                            <div class="p-1.5 bg-amber-500/20 text-amber-500 rounded-md"><i data-lucide="user-check" class="w-4 h-4"></i></div>
+                            <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wide">3. Review (SSOT)</h3>
+                        </div>
+                        <div class="space-y-2.5 relative z-10">
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">11</span>
+                                <span>Send to Queue (Airtable)</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-sky-900/50 hover:border-sky-700 transition">
+                                <span class="font-mono text-xs text-sky-400 bg-sky-950 px-1.5 py-0.5 rounded">12</span>
+                                <span class="text-sky-300">Telegram Notification</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-white bg-slate-950 p-2.5 rounded-lg border-2 border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.2)] transition">
+                                <span class="font-mono text-xs text-amber-500 bg-amber-950 px-1.5 py-0.5 rounded">13</span>
+                                <span class="font-semibold">Human Review (Gate)</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">14</span>
+                                <span>Revision Loop (Max 2)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Giai đoạn 4: Publish & Archive -->
+                    <div class="bg-slate-900/50 rounded-2xl p-5 border border-slate-700/60 node-connector">
+                        <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-800">
+                            <div class="p-1.5 bg-emerald-500/20 text-emerald-400 rounded-md"><i data-lucide="rocket" class="w-4 h-4"></i></div>
+                            <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wide">4. Publish & Log</h3>
+                        </div>
+                        <div class="space-y-2.5 relative z-10">
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                                <span class="font-mono text-xs text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded">15</span>
+                                <span>Scheduling Decision</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-emerald-900/50 hover:border-emerald-700 transition">
+                                <span class="font-mono text-xs text-emerald-500 bg-emerald-950 px-1.5 py-0.5 rounded">16</span>
+                                <span class="text-emerald-300">Publish Connector (Buffer)</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-400 bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-600 transition mt-4">
+                                <span class="font-mono text-xs text-slate-600 bg-slate-900 px-1.5 py-0.5 rounded">17</span>
+                                <span>Archive & Audit Log (DB)</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-400 bg-slate-950 p-2.5 rounded-lg border border-emerald-900/30 hover:border-emerald-800 transition">
+                                <span class="font-mono text-xs text-emerald-600 bg-emerald-950/50 px-1.5 py-0.5 rounded">18</span>
+                                <span class="text-emerald-400/80">Ghi log Google Sheet</span>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </section>
