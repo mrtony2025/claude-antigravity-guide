@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Win House Content Engine V2 | Hybrid OS</title>
+    <!-- Import Roboto Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        n8n: { 500: '#ff6600', 600: '#e65c00' },
+                        claude: { 100: '#f4ece6', 500: '#d97757', 900: '#2d2724' }
+                    },
+                    fontFamily: {
+                        sans: ['Roboto', 'system-ui', 'sans-serif'],
+                        serif: ['Georgia', 'Cambria', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for a sleeker look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .glow-n8n { box-shadow: 0 0 20px rgba(255, 102, 0, 0.15); }
+        .glow-claude { box-shadow: 0 0 20px rgba(217, 119, 87, 0.15); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-300 font-sans antialiased min-h-screen pb-20">
+
+    <!-- Top Navigation / Header -->
+    <header class="border-b border-slate-800 bg-slate-950/80 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-n8n-500 to-claude-500 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    W
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white tracking-tight">Win House Content Engine</h1>
+                    <p class="text-xs text-slate-400 font-mono">v2.0 // Hybrid Agent Architecture</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    Ready for Pitching
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 mt-8 space-y-12">
+
+        <!-- Section 1: Philosophy & The Two Brains -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-3 glass-panel rounded-2xl p-8 border-l-4 border-l-claude-500 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-8 opacity-10">
+                    <i data-lucide="brain-circuit" class="w-32 h-32 text-claude-500"></i>
+                </div>
+                <h2 class="text-3xl font-serif text-white mb-4">Hệ điều hành biên tập lai <span class="text-claude-500">(Hybrid Editorial OS)</span></h2>
+                <p class="text-lg text-slate-300 mb-6 max-w-3xl leading-relaxed">
+                    Thay vì để AI làm từ A-Z một cách vô hồn, hệ thống chia làm 2 "não" chuyên biệt. 
+                    <strong class="text-white">AI là Co-worker tạo nháp</strong>, <strong class="text-white">n8n là Hệ thống kiểm soát</strong>. 
+                    Quyết định xuất bản cuối cùng <span class="text-n8n-500 border-b border-n8n-500">luôn thuộc về con người</span>. Không có ngoại lệ.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                    <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50 flex gap-4 items-start">
+                        <div class="p-3 rounded-lg bg-claude-900 text-claude-500">
+                            <i data-lucide="pen-tool"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-semibold mb-1">Não Sáng Tạo (Claude + Canva)</h3>
+                            <p class="text-sm text-slate-400">Chuyên lên concept, viết copy, dàn layout ảnh. Cung cấp UI trực quan để con người dễ dàng can thiệp chỉnh sửa.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50 flex gap-4 items-start glow-n8n">
+                        <div class="p-3 rounded-lg bg-n8n-500/10 text-n8n-500">
+                            <i data-lucide="workflow"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-semibold mb-1">Não Vận Hành (n8n + Airtable)</h3>
+                            <p class="text-sm text-slate-400">Chuyên kiểm soát luồng, check rủi ro brand-fit, đẩy duyệt và phân phối nội dung ra đa nền tảng.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Architecture Pipeline (Visual Flow) -->
+        <section>
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="network" class="text-n8n-500"></i>
+                    Kiến trúc Hạ tầng Lõi (Core Tech Stack)
+                </h2>
+            </div>
+            
+            <!-- Flow Diagram -->
+            <div class="relative bg-slate-900/30 rounded-3xl p-8 border border-slate-800">
+                <div class="flex flex-col xl:flex-row items-center justify-between gap-6 relative z-10">
+                    
+                    <!-- Step 1 -->
+                    <div class="w-full xl:w-1/4 glass-panel p-6 rounded-2xl border-t-4 border-t-claude-500 glow-claude text-center relative">
+                        <div class="w-12 h-12 mx-auto bg-claude-900 rounded-full flex items-center justify-center text-claude-500 mb-4 shadow-lg border border-claude-500/30">
+                            <i data-lucide="sparkles"></i>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-claude-500">Lớp Sáng Tạo</span>
+                        <h3 class="text-lg font-bold text-white mt-1 mb-2">Claude & Canva</h3>
+                        <p class="text-xs text-slate-400">Scheduled Tasks + Skills tạo Draft (Copy & Carousel). Canva cho UI chỉnh sửa.</p>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hidden xl:flex text-slate-600">
+                        <i data-lucide="arrow-right" class="w-8 h-8"></i>
+                    </div>
+                    <div class="xl:hidden text-slate-600 my-2">
+                        <i data-lucide="arrow-down" class="w-6 h-6"></i>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="w-full xl:w-1/4 glass-panel p-6 rounded-2xl border-t-4 border-t-n8n-500 glow-n8n text-center relative">
+                        <div class="w-12 h-12 mx-auto bg-orange-950 rounded-full flex items-center justify-center text-n8n-500 mb-4 shadow-lg border border-n8n-500/30">
+                            <i data-lucide="git-merge"></i>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-n8n-500">Điều Phối</span>
+                        <h3 class="text-lg font-bold text-white mt-1 mb-2">n8n Cloud</h3>
+                        <p class="text-xs text-slate-400">Trục xương sống. Nhận payload, đối soát dữ liệu, lọc rủi ro và định tuyến.</p>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hidden xl:flex text-slate-600">
+                        <i data-lucide="arrow-right" class="w-8 h-8"></i>
+                    </div>
+                    <div class="xl:hidden text-slate-600 my-2">
+                        <i data-lucide="arrow-down" class="w-6 h-6"></i>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="w-full xl:w-1/4 glass-panel p-6 rounded-2xl border-t-4 border-t-blue-500 text-center relative hover:bg-slate-800/50 transition">
+                        <div class="w-12 h-12 mx-auto bg-blue-950 rounded-full flex items-center justify-center text-blue-400 mb-4 shadow-lg border border-blue-500/30">
+                            <i data-lucide="check-square"></i>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-400">Kiểm Duyệt</span>
+                        <h3 class="text-lg font-bold text-white mt-1 mb-2">Airtable Queue</h3>
+                        <p class="text-xs text-slate-400">Bảng SSOT cho Editor. Trực quan để Reject, Edit hoặc Approve nội dung.</p>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hidden xl:flex text-slate-600">
+                        <i data-lucide="arrow-right" class="w-8 h-8"></i>
+                    </div>
+                    <div class="xl:hidden text-slate-600 my-2">
+                        <i data-lucide="arrow-down" class="w-6 h-6"></i>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="w-full xl:w-1/4 glass-panel p-6 rounded-2xl border-t-4 border-t-emerald-500 text-center relative hover:bg-slate-800/50 transition">
+                        <div class="w-12 h-12 mx-auto bg-emerald-950 rounded-full flex items-center justify-center text-emerald-400 mb-4 shadow-lg border border-emerald-500/30">
+                            <i data-lucide="send"></i>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Xuất Bản</span>
+                        <h3 class="text-lg font-bold text-white mt-1 mb-2">Buffer / Canva</h3>
+                        <p class="text-xs text-slate-400">Scheduler an toàn, chính ngạch. Canva Direct cho các bài cần tinh chỉnh tay.</p>
+                    </div>
+                </div>
+
+                <!-- Foundation Layer -->
+                <div class="mt-8 pt-8 border-t border-slate-800/80 flex flex-col md:flex-row gap-6 justify-center">
+                    <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-4 w-full md:w-auto">
+                        <i data-lucide="database" class="text-indigo-400"></i>
+                        <div>
+                            <p class="text-white font-semibold text-sm">Supabase (System of Record)</p>
+                            <p class="text-xs text-slate-400">Lưu Audit Log, chống mất data</p>
+                        </div>
+                    </div>
+                    <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-4 w-full md:w-auto">
+                        <i data-lucide="book-open" class="text-stone-400"></i>
+                        <div>
+                            <p class="text-white font-semibold text-sm">Notion (Knowledge Base)</p>
+                            <p class="text-xs text-slate-400">SOP, Prompt Library, Brand Rules</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Guardrails & Deep Dive -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Left: Claude Skills Details -->
+            <div class="glass-panel rounded-2xl p-6 border border-slate-800">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-2 bg-claude-900 rounded-lg text-claude-500">
+                        <i data-lucide="cpu"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Claude Skills & Payload</h3>
+                </div>
+                <p class="text-sm text-slate-400 mb-6">Claude hoạt động dựa trên bộ kỹ năng (Skills) bị khóa chặt, không "sáng tạo vượt rào":</p>
+                
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-3 bg-slate-900/50 p-3 rounded-lg border border-slate-800">
+                        <i data-lucide="lock" class="text-amber-500 w-5 h-5 mt-0.5"></i>
+                        <div>
+                            <strong class="text-slate-200 block text-sm">WH_Canva_Carousel_Creation_Skill</strong>
+                            <span class="text-xs text-slate-500">Khóa quy tắc dàn trang, layout chuẩn.</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 bg-slate-900/50 p-3 rounded-lg border border-slate-800">
+                        <i data-lucide="lock" class="text-amber-500 w-5 h-5 mt-0.5"></i>
+                        <div>
+                            <strong class="text-slate-200 block text-sm">WH_Brand_Voice_Skill</strong>
+                            <span class="text-xs text-slate-500">Văn phong calm, ngắn gọn, gợi hành động nhỏ.</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 bg-slate-900/50 p-3 rounded-lg border border-slate-800">
+                        <i data-lucide="braces" class="text-blue-400 w-5 h-5 mt-0.5"></i>
+                        <div>
+                            <strong class="text-slate-200 block text-sm">Chuẩn hóa Payload gửi n8n</strong>
+                            <code class="text-[10px] text-emerald-400 bg-emerald-950/50 px-2 py-1 rounded mt-1 block">
+                                [Task_ID] + [Nguồn] + [Draft] + [Canva_URL] + [Status=Pending]
+                            </code>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Right: Guardrails (Red Zone) -->
+            <div class="bg-rose-950/20 rounded-2xl p-6 border border-rose-900/50 relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 opacity-5">
+                    <i data-lucide="shield-alert" class="w-48 h-48 text-rose-500"></i>
+                </div>
+                <div class="flex items-center gap-3 mb-6 relative z-10">
+                    <div class="p-2 bg-rose-950 rounded-lg text-rose-500">
+                        <i data-lucide="siren"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">4 Guardrails (Hard Stops)</h3>
+                </div>
+                <p class="text-sm text-rose-200/70 mb-6 relative z-10">Các chốt chặn SỐNG CÒN bảo vệ an toàn thương hiệu Win House:</p>
+                
+                <div class="space-y-3 relative z-10">
+                    <div class="flex gap-3 items-center p-3 rounded-lg bg-rose-950/40 border border-rose-900/30">
+                        <i data-lucide="x-circle" class="text-rose-500 w-5 h-5 shrink-0"></i>
+                        <p class="text-sm text-rose-100"><strong class="text-white">Không Auto Publish từ AI:</strong> Luôn dừng ở trạng thái Draft. Đợi Editor bấm Approve.</p>
+                    </div>
+                    <div class="flex gap-3 items-center p-3 rounded-lg bg-rose-950/40 border border-rose-900/30">
+                        <i data-lucide="x-circle" class="text-rose-500 w-5 h-5 shrink-0"></i>
+                        <p class="text-sm text-rose-100"><strong class="text-white">Không để Claude duyệt web rác:</strong> Rủi ro Prompt Injection. Chỉ đọc từ Whitelist.</p>
+                    </div>
+                    <div class="flex gap-3 items-center p-3 rounded-lg bg-rose-950/40 border border-rose-900/30">
+                        <i data-lucide="x-circle" class="text-rose-500 w-5 h-5 shrink-0"></i>
+                        <p class="text-sm text-rose-100"><strong class="text-white">Không Approve bằng AI Score:</strong> Điểm Brand-fit chỉ tham khảo, Taste do người thật quyết định.</p>
+                    </div>
+                    <div class="flex gap-3 items-center p-3 rounded-lg bg-rose-950/40 border border-rose-900/30">
+                        <i data-lucide="x-circle" class="text-rose-500 w-5 h-5 shrink-0"></i>
+                        <p class="text-sm text-rose-100"><strong class="text-white">Không Scale tốc độ mù quáng:</strong> Không cần đăng 10 bài/ngày. Giữ nhịp độ điềm tĩnh.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Roadmap & Action Items -->
+        <section class="glass-panel rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <i data-lucide="milestone" class="text-emerald-400"></i>
+                Roadmap & Kế Hoạch Hành Động Ngay
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Phase 1 -->
+                <div class="p-5 rounded-xl border border-slate-700/50 bg-slate-900/50">
+                    <div class="text-xs font-bold text-emerald-400 mb-2 uppercase tracking-wide">Phase 1: Validate (Tháng 1)</div>
+                    <h4 class="text-white font-semibold mb-2">The Hybrid OS</h4>
+                    <p class="text-sm text-slate-400 mb-3">Chạy mượt luồng Claude Draft -> Canva -> n8n -> Airtable. Chưa live tự động.</p>
+                    <div class="text-xs text-slate-500 bg-slate-950 p-2 rounded">Mục tiêu: Nạp thử 1 Pillar, đo KPI Editor saved time.</div>
+                </div>
+                <!-- Phase 2 -->
+                <div class="p-5 rounded-xl border border-slate-700/50 bg-slate-900/50">
+                    <div class="text-xs font-bold text-blue-400 mb-2 uppercase tracking-wide">Phase 2: Semi-Auto (Tháng 2)</div>
+                    <h4 class="text-white font-semibold mb-2">Publish Routing</h4>
+                    <p class="text-sm text-slate-400 mb-3">Bài duyệt xong trên Airtable tự chui vào lịch Buffer để đăng.</p>
+                    <div class="text-xs text-slate-500 bg-slate-950 p-2 rounded">Mục tiêu: Đóng gói API Buffer Connector mượt mà.</div>
+                </div>
+                <!-- Phase 3 -->
+                <div class="p-5 rounded-xl border border-slate-700/50 bg-slate-900/50">
+                    <div class="text-xs font-bold text-purple-400 mb-2 uppercase tracking-wide">Phase 3: Scale (Tháng 3+)</div>
+                    <h4 class="text-white font-semibold mb-2">Hardening</h4>
+                    <p class="text-sm text-slate-400 mb-3">Tối ưu Log Supabase, thêm Skills nâng cao, tính toán tool social care lớn hơn.</p>
+                    <div class="text-xs text-slate-500 bg-slate-950 p-2 rounded">Mục tiêu: Self-host n8n nếu cần thiết.</div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-6">
+                <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wide">🚀 4 Tài sản cần tạo ngay (Tech/Ops Owner)</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-slate-950 p-3 rounded border border-slate-800 flex items-center gap-3">
+                        <i data-lucide="file-json" class="text-slate-500"></i>
+                        <span class="text-xs text-slate-300 font-mono">WH_Claude_Skills_Pack_v1</span>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded border border-slate-800 flex items-center gap-3">
+                        <i data-lucide="arrow-right-left" class="text-slate-500"></i>
+                        <span class="text-xs text-slate-300 font-mono">WH_Payload_Spec_v1</span>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded border border-slate-800 flex items-center gap-3">
+                        <i data-lucide="trello" class="text-slate-500"></i>
+                        <span class="text-xs text-slate-300 font-mono">Airtable Review Queue</span>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded border border-slate-800 flex items-center gap-3">
+                        <i data-lucide="list-checks" class="text-slate-500"></i>
+                        <span class="text-xs text-slate-300 font-mono">Source Whitelist DB</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-12 text-center text-slate-600 text-sm">
+        <p>System Architecture designed for Win House • 2026</p>
+    </footer>
+
+    <!-- Initialize Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
