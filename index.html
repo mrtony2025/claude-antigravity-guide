@@ -933,6 +933,7 @@
     <a href="#github" onclick="toggleMenu()">GitHub</a>
     <a href="#models" onclick="toggleMenu()">Models</a>
     <a href="#tips" onclick="toggleMenu()">Tips</a>
+    <a href="#telegram" onclick="toggleMenu()">Telegram</a>
   </div>
 
   <!-- NAVBAR -->
@@ -951,6 +952,7 @@
         <a href="#github">GitHub</a>
         <a href="#models">Models</a>
         <a href="#tips">Tips</a>
+        <a href="#telegram">Telegram</a>
         <a href="https://docs.anthropic.com/claude-code" target="_blank" class="btn btn-secondary"
           style="padding: 8px 16px; font-size: 13px;">Tài liệu ↗</a>
       </div>
@@ -1873,6 +1875,381 @@
             với ý muốn.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- TELEGRAM INTEGRATION -->
+  <section id="telegram" style="background: #0B0B0B;">
+    <div class="container">
+      <div class="section-header">
+        <h2>Kết nối Telegram + Claude Code</h2>
+        <p>Điều khiển Claude Code từ xa qua Telegram — quy trình đầy đủ từng bước.</p>
+      </div>
+
+      <!-- Overview callout -->
+      <div class="callout" style="background: rgba(66, 133, 244, 0.05); border-color: rgba(66, 133, 244, 0.2); margin-bottom: 48px;">
+        <div class="callout-icon">📱</div>
+        <div class="callout-content">
+          <p><b>Hiểu đúng trước khi cài:</b> Trong Antigravity có 2 nơi nhập lệnh khác nhau. <b>Terminal</b> dùng cho lệnh hệ thống như <code>bun</code>, <code>claude</code>, <code>cd</code>. <b>Khung chat Claude Code</b> dùng cho slash command như <code>/plugin install</code>, <code>/telegram:configure</code>. Slash command gõ trong Terminal sẽ báo lỗi <code>zsh: no such file or directory</code>.</p>
+        </div>
+      </div>
+
+      <!-- Step-by-step accordion -->
+      <div class="accordion">
+
+        <!-- Bước 1 -->
+        <div class="acc-item active">
+          <div class="acc-header">
+            <div class="acc-num">1</div>
+            <span class="acc-title">Chuẩn bị môi trường — Cài Bun</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
+          </div>
+          <div class="acc-body" style="max-height: 400px;">
+            <div class="acc-content">
+              <p>Cần có: Telegram account, Claude Code đang chạy được, và <b>Bun</b> đã cài.</p>
+              <div class="fix-step">
+                <h5>Cài Bun</h5>
+                <div class="code-block" style="margin-bottom: 8px;">
+                  <code>curl -fsSL https://bun.sh/install | bash</code>
+                  <button class="copy-btn" onclick="copyCode(this, 'curl -fsSL https://bun.sh/install | bash')">Copy</button>
+                </div>
+              </div>
+              <div class="fix-step">
+                <h5>Reload shell và kiểm tra</h5>
+                <div class="code-block" style="margin-bottom: 8px;">
+                  <code>exec /bin/zsh &amp;&amp; source ~/.zshrc &amp;&amp; bun --help</code>
+                  <button class="copy-btn" onclick="copyCode(this, 'exec /bin/zsh &amp;&amp; source ~/.zshrc &amp;&amp; bun --help')">Copy</button>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted);">Nếu <code>bun --help</code> hiển thị help text là Bun đã sẵn sàng.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 2 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">2</div>
+            <span class="acc-title">Tạo bot Telegram bằng BotFather</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Trong Telegram, tìm <b>@BotFather</b> và gửi lệnh tạo bot mới.</p>
+              <div class="fix-step">
+                <h5>Lệnh tạo bot</h5>
+                <div class="code-block" style="margin-bottom: 8px;">
+                  <code>/newbot</code>
+                  <button class="copy-btn" onclick="copyCode(this, '/newbot')">Copy</button>
+                </div>
+              </div>
+              <p>BotFather sẽ yêu cầu đặt <b>Name</b> (tên hiển thị) và <b>Username</b> (phải kết thúc bằng <code>bot</code>, phải là duy nhất). Ví dụ: <code>tvt_claude_code_remote_bot</code>.</p>
+              <p>Sau khi hoàn tất, BotFather sẽ trả về <b>Bot Token</b> — lưu lại token này để dùng ở bước 5.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 3 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">3</div>
+            <span class="acc-title">Mở đúng project trong Antigravity</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Mở đúng folder project mà muốn Claude Code xử lý. Telegram sẽ điều khiển đúng session Claude Code đang mở trong folder đó. <b>Nếu mở nhầm folder thì bot vẫn chạy nhưng làm sai context.</b></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 4 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">4</div>
+            <span class="acc-title">Khởi động Claude Code session</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Trong <b>Terminal</b> (không phải khung chat), chạy:</p>
+              <div class="code-block">
+                <code>claude</code>
+                <button class="copy-btn" onclick="copyCode(this, 'claude')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 5 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">5</div>
+            <span class="acc-title">Cài plugin Telegram (trong khung chat Claude Code)</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Trong <b>khung chat Claude Code</b> (không phải Terminal), chạy slash command:</p>
+              <div class="code-block">
+                <code>/plugin install telegram@claude-plugins-official</code>
+                <button class="copy-btn" onclick="copyCode(this, '/plugin install telegram@claude-plugins-official')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 6 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">6</div>
+            <span class="acc-title">Cấu hình token bot (trong khung chat Claude Code)</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Nhập token từ BotFather vào lệnh sau — chạy trong <b>khung chat Claude Code</b>:</p>
+              <div class="code-block">
+                <code>/telegram:configure YOUR_BOT_TOKEN</code>
+                <button class="copy-btn" onclick="copyCode(this, '/telegram:configure YOUR_BOT_TOKEN')">Copy</button>
+              </div>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">Thay <code>YOUR_BOT_TOKEN</code> bằng token thật từ BotFather.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 7 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">7</div>
+            <span class="acc-title">Reload plugin</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Sau khi cấu hình xong, reload plugin trong <b>khung chat Claude Code</b>:</p>
+              <div class="code-block">
+                <code>/reload-plugins</code>
+                <button class="copy-btn" onclick="copyCode(this, '/reload-plugins')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 8 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">8</div>
+            <span class="acc-title">Khởi chạy session với Telegram channel</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Thoát session cũ nếu cần, rồi trong <b>Terminal</b> chạy:</p>
+              <div class="code-block" style="margin-bottom: 12px;">
+                <code>claude --channels plugin:telegram@claude-plugins-official</code>
+                <button class="copy-btn" onclick="copyCode(this, 'claude --channels plugin:telegram@claude-plugins-official')">Copy</button>
+              </div>
+              <div class="callout" style="background: rgba(52, 168, 83, 0.05); border-color: rgba(52, 168, 83, 0.2); margin: 0;">
+                <div class="callout-icon">✅</div>
+                <div class="callout-content">
+                  <p>Nếu chạy đúng, terminal sẽ hiển thị: <b>Listening for channel messages from: plugin:telegram@claude-plugins-official</b> — session đã attach channel thành công.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 9 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">9</div>
+            <span class="acc-title">Pair Telegram với session Claude Code</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Mở bot trên Telegram và gửi:</p>
+              <div class="code-block" style="margin-bottom: 12px;">
+                <code>hi</code>
+                <button class="copy-btn" onclick="copyCode(this, 'hi')">Copy</button>
+              </div>
+              <p>Bot sẽ trả về một <b>pairing code</b>. Quay lại đúng session Claude Code đang chạy, nhập vào khung chat:</p>
+              <div class="code-block" style="margin-bottom: 12px;">
+                <code>/telegram:access pair &lt;code&gt;</code>
+                <button class="copy-btn" onclick="copyCode(this, '/telegram:access pair &lt;code&gt;')">Copy</button>
+              </div>
+              <p>Sau khi pair thành công, khóa bot ngay:</p>
+              <div class="code-block">
+                <code>/telegram:access policy allowlist</code>
+                <button class="copy-btn" onclick="copyCode(this, '/telegram:access policy allowlist')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 10 -->
+        <div class="acc-item">
+          <div class="acc-header">
+            <div class="acc-num">10</div>
+            <span class="acc-title">Test thực tế</span>
+            <svg class="acc-icon icon-svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
+          </div>
+          <div class="acc-body">
+            <div class="acc-content">
+              <p>Trên Telegram, gửi thử:</p>
+              <div class="code-block" style="margin-bottom: 12px;">
+                <code>Hãy liệt kê 5 file quan trọng trong folder hiện tại</code>
+                <button class="copy-btn" onclick="copyCode(this, 'Hãy liệt kê 5 file quan trọng trong folder hiện tại')">Copy</button>
+              </div>
+              <div class="callout" style="background: rgba(52, 168, 83, 0.05); border-color: rgba(52, 168, 83, 0.2); margin: 0;">
+                <div class="callout-icon">🎉</div>
+                <div class="callout-content">
+                  <p>Nếu bot phản hồi được là quy trình đã hoàn tất thành công!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /accordion -->
+
+      <!-- TROUBLESHOOTING SECTION -->
+      <div style="margin-top: 60px;">
+        <div class="section-header" style="margin-bottom: 32px;">
+          <h3 style="font-size: 1.8rem; font-weight: 800;">Lỗi thường gặp</h3>
+        </div>
+
+        <div style="padding: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: #111; margin-bottom: 24px;">
+          <h4 style="color: var(--accent-anthropic); margin-bottom: 12px; font-size: 15px;">⚠️ Lỗi 1: <code>zsh: no such file or directory: /plugin</code></h4>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;"><b>Nguyên nhân:</b> Đã gõ slash command trong Terminal thay vì khung chat Claude Code.</p>
+          <div class="fix-step" style="margin-bottom: 0;">
+            <h5>Cách xử lý — chuyển sang khung chat và chạy lại</h5>
+            <div class="code-block">
+              <code>/plugin install telegram@claude-plugins-official</code>
+              <button class="copy-btn" onclick="copyCode(this, '/plugin install telegram@claude-plugins-official')">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: #111; margin-bottom: 24px;">
+          <h4 style="color: var(--accent-anthropic); margin-bottom: 12px; font-size: 15px;">⚠️ Lỗi 2: <code>Unknown skill: telegram:configure</code></h4>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;"><b>Nguyên nhân:</b> Plugin chưa load đúng skill, session chưa reload, hoặc runtime plugin đang lỗi.</p>
+          <div class="fix-step">
+            <h5>Bước 1 — Reload plugin</h5>
+            <div class="code-block" style="margin-bottom: 8px;">
+              <code>/reload-plugins</code>
+              <button class="copy-btn" onclick="copyCode(this, '/reload-plugins')">Copy</button>
+            </div>
+          </div>
+          <div class="fix-step" style="margin-bottom: 0;">
+            <h5>Bước 2 — Nếu vẫn lỗi, restart và chạy lại với channel</h5>
+            <div class="code-block">
+              <code>claude --channels plugin:telegram@claude-plugins-official</code>
+              <button class="copy-btn" onclick="copyCode(this, 'claude --channels plugin:telegram@claude-plugins-official')">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: #111; margin-bottom: 24px;">
+          <h4 style="color: var(--accent-anthropic); margin-bottom: 12px; font-size: 15px;">⚠️ Lỗi 3: Telegram bot không phản hồi pairing code</h4>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">Kiểm tra theo thứ tự:</p>
+          <div class="fix-step">
+            <h5>1 — Kiểm tra terminal có hiện thông báo Listening</h5>
+            <p style="font-size: 13px; color: var(--text-muted);">Terminal phải hiển thị: <code>Listening for channel messages from: plugin:telegram@claude-plugins-official</code></p>
+          </div>
+          <div class="fix-step">
+            <h5>2 — Nếu chưa, khởi chạy lại đúng lệnh</h5>
+            <div class="code-block" style="margin-bottom: 8px;">
+              <code>claude --channels plugin:telegram@claude-plugins-official</code>
+              <button class="copy-btn" onclick="copyCode(this, 'claude --channels plugin:telegram@claude-plugins-official')">Copy</button>
+            </div>
+          </div>
+          <div class="fix-step" style="margin-bottom: 0;">
+            <h5>3 — Sau khi đổi token phải reload plugins</h5>
+            <div class="code-block">
+              <code>/reload-plugins</code>
+              <button class="copy-btn" onclick="copyCode(this, '/reload-plugins')">Copy</button>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">Chỉ giữ <b>1 session Claude</b> đang mở cùng lúc.</p>
+          </div>
+        </div>
+
+        <div style="padding: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: #111; margin-bottom: 24px;">
+          <h4 style="color: var(--accent-anthropic); margin-bottom: 12px; font-size: 15px;">⚠️ Lỗi 4: Session <em>Listening…</em> nhưng Telegram vẫn im</h4>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">Đây thường là lỗi inbound/runtime của plugin hoặc channel — không phải lỗi thao tác người dùng.</p>
+          <div class="fix-step">
+            <h5>Thử lại theo thứ tự</h5>
+            <p style="font-size: 13px; color: var(--text-muted);">1. Đóng hết session → 2. Mở lại 1 session duy nhất → 3. Chạy <code>/reload-plugins</code> → 4. Nhắn lại <code>hi</code> qua Telegram. Nếu vẫn không phản hồi, ghi chú đây là lỗi runtime/plugin.</p>
+          </div>
+        </div>
+
+        <div style="padding: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: #111;">
+          <h4 style="color: var(--accent-anthropic); margin-bottom: 12px; font-size: 15px;">⚠️ Lỗi 5: Session không nhận channel messages</h4>
+          <p style="color: var(--text-muted); font-size: 14px;">Nếu đang dùng môi trường tổ chức/team, channels có thể bị chặn ở cấp admin hoặc setting hệ thống. Plugin có thể hiện nhưng message không đẩy vào session — cần liên hệ admin để mở quyền.</p>
+        </div>
+      </div>
+
+      <!-- SECURITY BLOCK -->
+      <div style="margin-top: 60px; padding: 40px; border: 2px solid rgba(232, 103, 58, 0.4); border-radius: var(--radius); background: rgba(232, 103, 58, 0.04);">
+        <h3 style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; font-size: 1.4rem;">
+          <span style="font-size: 28px;">🔐</span> Lưu ý bảo mật — Bắt buộc
+        </h3>
+        <div class="tips-grid" style="margin-top: 0; grid-template-columns: repeat(2, 1fr);">
+          <div class="tip-card" style="border-left: 3px solid var(--accent-anthropic);">
+            <h4>Không để lộ token</h4>
+            <p>Không chụp màn hình chứa bot token. Không commit token hoặc file <code>.env</code> lên Git.</p>
+          </div>
+          <div class="tip-card" style="border-left: 3px solid var(--accent-anthropic);">
+            <h4>Khóa bot sau khi pair</h4>
+            <p>Pair xong phải chạy ngay <code>/telegram:access policy allowlist</code> để chỉ whitelist user được phép nhắn.</p>
+          </div>
+          <div class="tip-card" style="border-left: 3px solid var(--accent-anthropic);">
+            <h4>Token bị lộ?</h4>
+            <p>Ngay lập tức revoke token cũ qua BotFather (<code>/revoke</code>) và tạo token mới. Token cũ không thể thu hồi từng phần.</p>
+          </div>
+          <div class="tip-card" style="border-left: 3px solid var(--accent-anthropic);">
+            <h4>1 bot — 1 session</h4>
+            <p>Không mở nhiều session dùng chung 1 bot khi chưa kiểm soát rõ context. Dễ gây conflict.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- POST-INSTALL CHECKLIST -->
+      <div style="margin-top: 60px; padding: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);">
+        <h3 style="margin-bottom: 24px; font-size: 1.3rem; font-weight: 700;">✅ Checklist sau cài đặt</h3>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <label style="display: flex; align-items: center; gap: 12px; font-size: 15px; cursor: pointer;">
+            <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--accent-gemini);">
+            Bun đã cài và <code>bun --help</code> chạy được
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; font-size: 15px; cursor: pointer;">
+            <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--accent-gemini);">
+            Bot đã tạo trên BotFather, có token
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; font-size: 15px; cursor: pointer;">
+            <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--accent-gemini);">
+            Plugin đã cài: <code>/plugin install telegram@claude-plugins-official</code>
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; font-size: 15px; cursor: pointer;">
+            <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--accent-gemini);">
+            Token đã cấu hình: <code>/telegram:configure YOUR_BOT_TOKEN</code>
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; font-size: 15px; cursor: pointer;">
+            <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--accent-gemini);">
+            Session khởi động với <code>--channels plugin:telegram@...</code>
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; font-size: 15px; cursor: pointer;">
+            <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--accent-gemini);">
+            Đã pair thành công và chuyển sang <code>allowlist</code>
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; font-size: 15px; cursor: pointer;">
+            <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--accent-gemini);">
+            Bot phản hồi được tin nhắn thử nghiệm từ Telegram
+          </label>
+        </div>
+      </div>
+
     </div>
   </section>
 
